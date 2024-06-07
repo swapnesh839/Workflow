@@ -1,0 +1,10 @@
+.Layoutcard:hover > Img{
+    display: inline;
+}
+.layout-card:hover .layout-cardimg {
+    display: inline;
+  }
+.layout-cardimg {
+    display: none;
+    cursor:pointer;
+  }

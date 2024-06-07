@@ -1,0 +1,31 @@
+.Navbar {
+    height: 100%;
+    color: white;
+    min-width: 40px;
+    transition: all ease-in-out 0.5s !important;
+    width: fit-content;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 9000;
+    background-color: rgba(0, 0, 0, 0.758) !important;
+    text-shadow: 1px 1px 1px rgb(35, 34, 34) !important;
+    backdrop-filter: blur(1px) !important;
+}
+.navtogglericon{
+    background-color: rgba(30, 28, 28, 0.854);
+}
+.navtogglericon:hover{
+    background-color: rgba(43, 42, 42, 0.717);
+}
+@media (max-width: 600px) {
+    .open{
+      width: 100% !important;
+    }
+  }
+
+.Navbarnav>li {
+    padding: 0;
+    margin-left: -20px;
+    list-style: none;
+}
