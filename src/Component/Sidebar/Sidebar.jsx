@@ -8,9 +8,9 @@ const Sidebar = () => {
   const pathobj = [
     { path: "/", text: "Layout" },
     // { path: "/BOYD", text: "BOYD" },
+    { path: "/Recipe", text: "Recipe" },
     { path: "/Itinerary", text: "Itinerary" },
     { path: "/Workflow", text: "Workflow" },
-    { path: "/Recipe", text: "Recipe" },
   ]
   const [open, SetOpen] = useState(false)
   return (

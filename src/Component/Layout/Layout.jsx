@@ -5,7 +5,20 @@ import { Rnd } from "react-rnd";
 import Box from "../../../src/assets/Box.jpg"
 import { addData, getAllData, deleteDataById, updatestore, clearStore } from '../../../db/dbFunctions';
 import axios from 'axios';
+import Wp from "../../assets/WP.png"
+import CRM from "../../assets/CRM.png"
+import SMS from "../../assets/SMS.png"
+import Mail from "../../assets/Mail.png"
+import Erp from "../../assets/erp.svg"
 import { Trash } from 'lucide-react';
+
+const stepinput = [
+    { value: "Wp", img: Wp },
+    { value: "CRM", img: CRM },
+    { value: "SMS", img: SMS },
+    { value: "Mail", img: Mail },
+    { value: "Erp", img: Erp },
+]
 
 const Layout = () => {
     const [item, Setitem] = useState(["item 1"])
@@ -14,6 +27,7 @@ const Layout = () => {
     const [preview, setPreview] = useState(null);
     const [Workflows, SetWorkflows] = useState([])
     const [Fetch, SetFetch] = useState(true)
+    const [newProduct, SetNewProduct] = useState([])
 
     const AddWorkflowstodb = async ({ obj }) => {
         const data = await addData({ storeName: "Workflows", newData: obj })
@@ -25,7 +39,7 @@ const Layout = () => {
     }
     useEffect(() => {
         if (preview !== null && Workflows[preview]) {
-            console.log(Workflows[preview]);
+            // console.log(Workflows[preview]);
         }
     }, [Workflows, preview])
     useEffect(() => {
@@ -72,18 +86,11 @@ const Layout = () => {
     }
     // AddWorkflowstodb({ obj: fobj })
 
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            // setSelectedFile(file);
-            setPreview(URL.createObjectURL(file));
-        }
-    };
     const Addsteps = () => {
         Setitem(prevItems => [...prevItems, `item ${prevItems.length + 1}`]);
     };
     const Updateproduct = () => {
-        // updatestore({storeName:"Workflows",updatedData:Workflows})
+        updatestore({ storeName: "Workflows", updatedData: Workflows })
         console.log(Workflows);
     }
     const editFunction = ({ id, updatedState }) => {
@@ -101,6 +108,26 @@ const Layout = () => {
             });
         }
     };
+    const handleProductnamechange = (e) => {
+        const newName = e.target.value;
+
+        if (preview !== null && ActiveCard !== null) {
+            SetWorkflows(prev => {
+                const updatedWorkflows = [...prev];
+                updatedWorkflows[preview] = {
+                    ...updatedWorkflows[preview],
+                    products: updatedWorkflows[preview].products.map((product, index) => {
+                        if (index === ActiveCard) {
+                            return { ...product, name: newName };
+                        }
+                        return product;
+                    })
+                };
+                return updatedWorkflows;
+            });
+        }
+    };
+
 
 
     return (
@@ -109,20 +136,25 @@ const Layout = () => {
                 <Container fluid className='Layout bg-white h-100 p-2' style={{ width: "1100px" }}>
                     <Container fluid className='p-0 d-flex justify-content-evenly h-100 w-100 align-items-center align-items-start'>
                         <div>
-                            {preview !== null &&
-                                <div  className='bg-dark text-white p-2 mb-2 rounded-3'>
-                                    {Workflows[preview].name}
+                            {
+                                <div className='bg-dark text-white p-2 mb-2 rounded-3'>
+                                    {Workflows[preview]?.name || "workflow name"}
                                 </div>
                             }
                             <div style={{ height: "500px", width: "600px" }} className='rounded-3 bg-dark d-inline-block'>
                                 <div className='border w-100 h-100 border-dark border-3 rounded-3 w-100 boundingbox p-2'>
                                     <div className='h-100 w-100 position-relative' >
-                                        <div style={{ width: "40px", height: "40px" }} onClick={() => { AddNewProduct({ type: "box" }) }} className='d-inline-block position-absolute bg-white top-0 end-0 p-1 z-3'>
-                                            <div className='h-100 w-100 bg-black'></div>
+                                        <div style={{ width: "40px", height: "40px" }} onClick={() => { AddNewProduct({ type: "box" }) }} className='d-inline-block position-absolute cursor-pointer bg-white top-0 end-0 p-1 z-3 text-white'>
+                                            <div className='h-100 w-100 bg-black d-flex'>
+                                                <span className='m-auto fs-6' >+</span>
+                                            </div>
                                         </div>
-                                        <div style={{ width: "40px", height: "40px", right: "45px" }} onClick={() => { AddNewProduct({ type: "rounded" }) }} className='d-d-inline-block position-absolute top-0 p-1 bg-white z-3'>
-                                            <div className='h-100 w-100 bg-black rounded-2'></div>
+                                        <div style={{ width: "40px", height: "40px", right: "45px" }} onClick={() => { AddNewProduct({ type: "rounded" }) }} className='d-d-inline-block cursor-pointer position-absolute top-0 p-1 bg-white z-3 text-white'>
+                                            <div className='h-100 w-100 bg-black rounded-2 d-flex'>
+                                                <span className='m-auto fs-6' >+</span>
+                                            </div>
                                         </div>
+                                        
                                         {preview !== null && <Button
                                             onClick={Updateproduct}
                                             className='position-absolute end-0 bottom-0 z-3'
@@ -141,34 +173,62 @@ const Layout = () => {
                                 </div>
                             </div>
                         </div>
-                        <div style={{ height: "500px", width: "400px" }} className='rounded-3 bg-dark p-2'>
-                            <div className='border border-dark border-3 h-100 w-100 rounded-3 w-100 position-relative overflow-auto hidescrollbar'>
-                                <p className='border-bottom border-dark border-2 w-100 p-2 sticky-top z-3 bg-dark'>Product setup</p>
-                                <Form className='p-2'>
-                                    <input placeholder='Workflow Name' className='w-100 mb-3' />
-                                    <div className='w-100 ' style={{ minHeight: "100px" }}>
-                                        {item.map((i, v) => (
-                                            <div key={v} className='bg-dark-subtle cursor-pointer py-2 hidescrollbar my-2 text-dark text-capitalize text-center'>
-                                                {i}
+                        <div>
+                            {
+                                <div className='bg-dark text-white p-2 mb-2 rounded-3'>
+                                    {"Product setup"}
+                                </div>
+                            }
+                            <div style={{ height: "500px", width: "400px" }} className='rounded-3 bg-dark d-inline-block'>
+                                <div className='border border-dark border-3 h-100 w-100 rounded-3 w-100 position-relative overflow-auto hidescrollbar'>
+                                    <Form className='p-2'>
+                                        <div className='py-2 sticky-top bg-dark'>Add Setups</div>
+                                        {/* {console.log(typeof(Workflows[preview]),Workflows[preview]?.products[ActiveCard])} */}
+                                        <input placeholder='Workflow Name' value={Workflows[preview]?.products[ActiveCard]?.name || "Select any product"} onChange={handleProductnamechange} className='w-100 mb-3' />
+                                        <div className='w-100 ' style={{ minHeight: "100px" }}>
+                                            {item.map((i, v) => (
+                                                // <div key={v} className='bg-dark-subtle cursor-pointer py-2 hidescrollbar my-2 text-dark text-capitalize text-center'>
+                                                //     {i}
+                                                // </div>
+                                                <div className='w-100 bg-white text p-2 my-1'>
+                                                    <input className='w-100' />
+                                                    <Row className=' p-2'>{
+                                                        stepinput.map((o) => (
+
+                                                            <Col className='bg-dark-subtle d-flex flex-column rounded-2 text-center mx-1 p-2 justify-content-center align-content-center'>
+                                                                <input value={o.value} className="mx-auto" type='checkbox' id='wp' />
+                                                                <div className=''>
+                                                                    <label className='d-inline' htmlFor="wp">
+                                                                        <Image src={o.img} width={30} className='p-1' />
+                                                                    </label>
+                                                                </div>
+                                                            </Col>
+                                                        ))
+                                                    }
+                                                    </Row>
+                                                </div>
+                                            ))}
+                                            <div onClick={Addsteps} className='bg-dark-subtle fs-3 cursor-pointer py-1 hidescrollbar my-2 text-dark text-capitalize text-center'>
+                                                +
                                             </div>
-                                        ))}
-                                    </div>
-                                    <div className='d-flex  sticky-bottom bg-dark'>
-                                        <Button size='sm' className='ms-auto m-2' onClick={Addsteps} variant='success'>
-                                            Add Steps
-                                        </Button>
-                                    </div>
-                                </Form>
+                                        </div>
+                                        <div className='d-flex sticky-bottom bg-dark'>
+                                            <Button size='sm' className='ms-auto m-2' onClick={Addsteps} variant='success'>
+                                                save
+                                            </Button>
+                                        </div>
+                                    </Form>
+                                </div>
                             </div>
                         </div>
 
                     </Container >
                 </Container >
-            </Container>
-            <Container style={{ width: "1100px" }} className=''>
+            </Container >
+            <Container style={{ width: "1060px" }} className=''>
                 <Container fluid className='p-0 d-flex justify-content-evenly h-100 w-100 align-items-center align-items-start'>
                     <div className='rounded-3 bg-dark p-2 w-100'>
-                            <p className='border-bottom border-dark border-2 w-100 p-2 sticky-top z-3'>layouts</p>
+                        <p className='border-bottom border-dark border-2 w-100 p-2 sticky-top z-3'>layouts</p>
                         <Row className=' h-100 w-100 p-2'>
                             {
                                 Workflows.map((i, index) => (
@@ -201,12 +261,12 @@ const Component = ({ position, id, text, editFunction, ActiveCard, setActiveCard
         height: config?.height || 100,
         x: config?.x || 0,
         y: config?.y || 0,
-        img: config?.img || null
+        img: config?.img
     });
 
     useEffect(() => {
-        console.log(config?.img, state?.img);
-        // editFunction({id:id, updatedState:state}) ;
+        // console.log(config?.img, state?.img);
+        editFunction({ id: id, updatedState: state });
     }, [state])
     const handleFocus = (id) => {
         setActiveCard(id)
@@ -263,23 +323,20 @@ const Component = ({ position, id, text, editFunction, ActiveCard, setActiveCard
             // className={`rounded-1 text-dark text-center bg-dark-subtle d-flex ${ActiveCard === id ? 'border border-3 border-primary' : ''}`}
             className={`${config?.shape == "rounded" && "rounded-2"} text-dark text-center bg-dark-subtle d-flex ${ActiveCard == id && "border border-2 border-info"}`}
         >
-            <Card className='w-100 position-relative Layoutcard'>
+            <div className='w-100 position-relative Layoutcard d-flex'>
                 <Image onClick={() => triggerImageInput()} style={{ minHeight: "20px", minWidth: "20px" }} src='https://uxwing.com/wp-content/themes/uxwing/download/editing-user-action/edit-round-line-icon.png' width={"10%"} className='position-absolute ratio-1x1 z-3 m-2 layout-cardimg top-0 end-0  bg-light text-white rounded-circle' />
-                <Card.Body className='p-1'>
-                    <div className='h-75 d-flex'
-                        style={{
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center',
-                            backgroundImage: `url(${state.img || Box})`
-                        }}
-                    >
-                        {!state.img && <p className='m-auto text-dark-emphasis bg-dark-subtle'>change the default image</p>}
-                    </div>
-                    <Card.Title className=' m-auto'>
+                <div className='p-1 w-100 d-flex'
+                    style={{
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        backgroundImage: `url(${state.img || Box})`
+                    }}>
+                    {/* {!state.img && <p className='m-auto text-dark-emphasis bg-dark-subtle'>change the default image</p>} */}
+                    <p className='mt-auto bg-dark-subtle w-100 mx-auto'>
                         {text}
-                    </Card.Title>
-                </Card.Body>
-            </Card>
+                    </p>
+                </div>
+            </div>
         </Rnd>
     );
 };
