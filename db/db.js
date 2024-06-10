@@ -3,13 +3,20 @@ import Dexie from 'dexie';
 // Initialize Dexie database
 const db = new Dexie('Spectraworkflow');
 db.version(1).stores({
-  Workflows:'++id,name,config',
+  Workflows:'++id,name,products',
   Layouts:'++id,name,config',
   Recipes:'++id,name,config',
   Itineraries:'++id,name,config',
   products:'++id,name,config',
   // workflow: '++id, Workflows, Layouts, Recipes, Itineraries, products'
 });
+
+
+
+
+
+
+
 // const dummyData = {
 //   Workflows: [
 //     { id: 1, name: 'Workflow 1', status: 'active' },
