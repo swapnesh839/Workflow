@@ -334,7 +334,7 @@ const Layout = () => {
                                             </div>
                                         </div>
                                         <div className='d-flex sticky-bottom bg-dark'>
-                                            <Button size='sm' className='ms-auto m-2' onClick={Addsteps} variant='success'>
+                                            <Button size='sm' className='ms-auto m-2' onClick={AddWorkflowstodb} variant='success'>
                                                 save
                                             </Button>
                                         </div>

@@ -1,5 +1,5 @@
 import { Trash } from 'lucide-react'
-import React from 'react'
+import React, { useState } from 'react'
 import { Col, Container, Image, Row } from 'react-bootstrap'
 import Wp from "../../assets/WP.png"
 import CRM from "../../assets/CRM.png"
@@ -9,11 +9,11 @@ import Erp from "../../assets/erp.svg"
 import { Rnd } from 'react-rnd'
 
 const obj = [
-  {name:"Wp",img:Wp},
-  {name:"CRM",img:CRM},
-  {name:"SMS",img:SMS},
-  {name:"Mail",img:Mail},
-  {name:"Erp",img:Erp}
+  { name: "Wp", img: Wp },
+  { name: "CRM", img: CRM },
+  { name: "SMS", img: SMS },
+  { name: "Mail", img: Mail },
+  { name: "Erp", img: Erp }
 ]
 
 const Itinerary = () => {
@@ -27,10 +27,13 @@ const Itinerary = () => {
                 {"Itineraries name"}
               </div>
               <div style={{ height: "500px", width: "600px" }} className='rounded-3 bg-dark d-inline-block'>
-              <div className='border w-100 h-100 border-dark border-3 rounded-3 w-100 boundingbox p-2'>
+                <div className='border w-100 h-100 border-dark border-3 rounded-3 w-100 boundingbox p-2'>
                   <div className='h-100 w-100 position-relative text-white' >
-                    <Component />
-                    {/* <Component/> */}
+                    {
+                      ["j", "u", "jk"].map((i, index) => (
+                        <Component key={index} index={index} isLast={index === 2} /> // Pass isLast prop
+                      ))
+                    }
                   </div>
                 </div>
               </div>
@@ -42,11 +45,11 @@ const Itinerary = () => {
               <div style={{ height: "500px", width: "400px" }} className='rounded-3 bg-dark overflow-x-auto'>
                 <Row className='p-3'>
                   {
-                    obj.map((i)=>(
+                    obj.map((i) => (
                       <Col key={i.name} xxl="6" xl="6" md="6" xs="6" className='p-1'>
                         <div className='d-flex text-black bg-dark-subtle h-100 p-2 flex-column'>
-                        <Image src={i.img} className='mx-auto' width={100} />
-                        <p className='mx-auto text-center'>{i.name}</p>
+                          <Image src={i.img} className='mx-auto' width={100} />
+                          <p className='mx-auto text-center'>{i.name}</p>
                         </div>
                       </Col>
                     ))
@@ -62,7 +65,7 @@ const Itinerary = () => {
             <p className='border-bottom border-dark border-2 w-100 p-2 sticky-top z-3'>Itineraries</p>
             <Row className=' h-100 w-100 p-2'>
 
-              <Col  lg="3" md="3" sm="3" xs="3" xxl="3" onClick={() => { setPreview(index) }} className="text-center p-2 cursor-pointer">
+              <Col lg="3" md="3" sm="3" xs="3" xxl="3" onClick={() => { setPreview(index) }} className="text-center p-2 cursor-pointer">
                 <div className={`p-3 bg-dark-subtle position-relative text-dark ${true == true && "border border-info border-2"}`}>
                   <Trash
                     //  onClick={(e) => {
@@ -81,49 +84,44 @@ const Itinerary = () => {
     </>
   )
 }
-const Component = () => {
-
-  // const [state, setState] = useState({
-  //     width: config?.width || 100,
-  //     height: config?.height || 100,
-  //     x: config?.x || 0,
-  //     y: config?.y || 0,
-  //     img: config?.img
-  // });
+const Component = ({ config, isLast, index }) => {
+  const [state, setState] = useState({
+    width: config?.width || 400,
+    height: config?.height || 70,
+    x: config?.x || 0,
+    y: config?.y || 0
+  });
 
   return (
     <Rnd
-      size={{ width: 300, height: 70 }}
-      position={{ x: 0, y: 0 }}
-      // onDragStop={(e, d) => {
-      //     setState((prev) => (
-      //         {
-      //             ...prev,
-      //             x: d?.x,
-      //             y: d?.y
-      //         }
-
-      //     ))
-      // }}
-      // onClick={() => handleFocus(id)}
-      // onResizeStop={(e, direction, ref, delta, position) => {
-      //     setState((prev) => (
-      //         {
-      //             ...prev,
-      //             width: ref.style.width,
-      //             height: ref.style.height
-      //         }
-      //     ));
-      // }}
+      size={{ width: state.width, height: state.height }}
+      position={{ x: state.x, y: state.y }}
+      onDragStop={(e, d) => {
+        setState((prev) => ({
+          ...prev,
+          x: d.x,
+          y: d.y
+        }));
+      }}
+      onResizeStop={(e, direction, ref, delta, position) => {
+        setState((prev) => ({
+          ...prev,
+          width: ref.style.width,
+          height: ref.style.height
+        }));
+      }}
       minWidth={100}
       minHeight={50}
       bounds="parent"
       className='text-dark text-center bg-dark-subtle d-flex'
     >
-      <div className='bg-white h-100 d-flex p-2 text-dark w-100 m-auto'>
+      <div className='bg-white h-100 d-flex flex-column p-2 text-dark w-100 m-auto position-relative'>
+        <p className='text-black w-100 text-start position-absolute start-0 top-0'>step {index}</p>
         <span className='m-auto'>Alert</span>
+        {isLast && (
+          <Trash className='position-absolute top-0 end-0 bg-danger rounded-4 p-1 m-1 text-white' />
+        )}
       </div>
-
     </Rnd>
   );
 };
