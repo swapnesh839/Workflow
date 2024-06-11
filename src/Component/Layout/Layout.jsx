@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { Button, Card, Col, Container, Form, Image, Modal, Row } from 'react-bootstrap'
+import React, { useEffect, useState } from 'react'
+import { Button, Col, Container, Form, Image, Row } from 'react-bootstrap'
 import "./Layout.css"
 import { Rnd } from "react-rnd";
 import Box from "../../../src/assets/Box.jpg"
@@ -27,12 +27,12 @@ const Layout = () => {
     const [preview, setPreview] = useState(null);
     const [Workflows, SetWorkflows] = useState([])
     const [Fetch, SetFetch] = useState(true)
+    const [isAdding, SetisAdding] = useState(false)
     const [NewWorkflow, SetNewWorkflow] = useState({
         "name": `Workflow ${Workflows.length + 1}`,
         "products": [{ name: "one", config: { width: "200", height: "100", x: 0, y: 30, shape: "box" }, steps: [{ name: "stnklm", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] }]
     })
-    const [Workflowtoshow, SetWorkflowtoshow] = useState(preview != null ? Workflows[preview] : NewWorkflow)
-    // const Workflowtoshow = preview != null ? Workflows[preview] : NewWorkflow
+    const [Workflowtoshow, SetWorkflowtoshow] = useState(preview != null ? Workflows[preview] : isAdding && NewWorkflow)
 
 
     useEffect(() => {
@@ -44,31 +44,68 @@ const Layout = () => {
 
 
     useEffect(() => {
-        SetWorkflowtoshow(preview != null ? Workflows[preview] : NewWorkflow)
-    }, [Workflows, preview,ActiveCard,NewWorkflow])
+        SetWorkflowtoshow(preview != null ? Workflows[preview] : NewWorkflow && NewWorkflow)
+    }, [Workflows, preview, ActiveCard, NewWorkflow])
 
 
     const AddWorkflowstodb = async () => {
         await addData({ storeName: "Workflows", newData: NewWorkflow })
         SetFetch(i => !i)
+        SetisAdding(false)
     }
     const handleSetupscheckboxChange = (stepIndex, checkboxValue) => {
-        console.log("kjm");
-        if (preview !== null && ActiveCard !== null) {
-            SetWorkflows(prev => {
-                console.log("Previous State:", prev);
-                const updatedWorkflows = [...prev];
-                const updatedSteps = [...updatedWorkflows[preview].products[ActiveCard].steps];
+        if (ActiveCard !== null) {
 
-                updatedSteps[stepIndex] = {
-                    ...updatedSteps[stepIndex],
-                    [checkboxValue]: !updatedSteps[stepIndex][checkboxValue],
-                };
-                updatedWorkflows[preview].products[ActiveCard].steps = updatedSteps;
+            if (preview !== null) {
+                SetWorkflows(prev => {
+                    if (!prev || prev.length <= preview) return prev; // Prevent errors if workflows are not yet loaded
+                    if (!prev[preview]?.products[ActiveCard]) return prev; // Prevent errors if product does not exist
 
-                console.log("Updated State:", updatedWorkflows);
-                return updatedWorkflows;
-            });
+                    const updatedWorkflows = [...prev];
+                    const currentWorkflow = { ...updatedWorkflows[preview] };
+                    const currentProduct = { ...currentWorkflow.products[ActiveCard] };
+                    const updatedSteps = [...currentProduct.steps];
+
+                    updatedSteps[stepIndex] = {
+                        ...updatedSteps[stepIndex],
+                        [checkboxValue]: !updatedSteps[stepIndex][checkboxValue],
+                    };
+
+                    currentProduct.steps = updatedSteps;
+                    currentWorkflow.products[ActiveCard] = currentProduct;
+                    updatedWorkflows[preview] = currentWorkflow;
+
+                    console.log("Updated Workflows:", updatedWorkflows);
+                    return updatedWorkflows;
+                });
+            } else {
+                SetNewWorkflow(prev => {
+                    if (!prev || !prev.products || !prev.products[ActiveCard]) return prev; // Prevent errors if new workflow or products are not yet loaded
+
+                    const updatedProducts = [...prev.products];
+                    const currentProduct = { ...updatedProducts[ActiveCard] };
+                    const updatedSteps = [...currentProduct.steps];
+
+                    updatedSteps[stepIndex] = {
+                        ...updatedSteps[stepIndex],
+                        [checkboxValue]: !updatedSteps[stepIndex][checkboxValue],
+                    };
+
+                    currentProduct.steps = updatedSteps;
+                    updatedProducts[ActiveCard] = currentProduct;
+
+                    const newState = {
+                        ...prev,
+                        products: updatedProducts,
+                    };
+
+                    console.log("Updated NewWorkflow:", newState);
+                    return newState;
+                });
+            }
+        }
+        else{
+            window.alert("Select an ActiveCard");
         }
     };
 
@@ -91,6 +128,7 @@ const Layout = () => {
     };
 
     const AddNewProduct = ({ type }) => {
+        SetisAdding(true)
         const newProduct = { name: "Edit this name", config: productConfig({ type }), steps: [{ name: "stnklm", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] };
 
         if (preview != null) {
@@ -124,64 +162,34 @@ const Layout = () => {
         ]
     }
     // AddWorkflowstodb({ obj: fobj })
-
-    // const Addsteps = () => {
-    //     const newStep = { name: `step ${Workflowtoshow.products[ActiveCard ||0]?.steps.length + 1}`, Wp: false, CRM: false, Erp: false, SMS: false, Mail: false };
-
-    //     if (preview !== null) {
-    //         SetWorkflows(prev => {
-    //             const updatedWorkflows = [...prev];
-    //             const currentWorkflow = updatedWorkflows[preview];
-
-    //             currentWorkflow.products = currentWorkflow.products.map(product => ({
-    //                 ...product,
-    //                 steps: [...product.steps, newStep]
-    //             }));
-
-    //             return updatedWorkflows;
-    //         });
-    //     } else {
-    //         SetNewWorkflow(prev => {
-    //             const updatedProducts = prev.products.map(product => ({
-    //                 ...product,
-    //                 steps: [...product.steps, newStep]
-    //             }));
-
-    //             return {
-    //                 ...prev,
-    //                 products: updatedProducts
-    //             };
-    //         });
-    //     }
-    // };
     const Addsteps = () => {
         const newStep = { name: `step ${Workflowtoshow.products[ActiveCard || 0]?.steps.length + 1}`, Wp: false, CRM: false, Erp: false, SMS: false, Mail: false };
-    
+
         if (preview !== null) {
             SetWorkflows(prev => {
                 if (!prev || prev.length <= preview) return prev; // Prevent errors if workflows are not yet loaded
-    
+
                 const updatedWorkflows = [...prev];
                 const currentWorkflow = updatedWorkflows[preview];
-    
+
                 if (!currentWorkflow?.products) return prev; // Prevent errors if products are not yet loaded
-    
+
                 currentWorkflow.products = currentWorkflow.products.map(product => ({
                     ...product,
                     steps: [...product.steps, newStep]
                 }));
-    
+
                 return updatedWorkflows;
             });
         } else {
-            console.log("kj",NewWorkflow);
+            console.log("kj", NewWorkflow);
 
             SetNewWorkflow(prev => {
                 const updatedProducts = prev.products.map(product => ({
                     ...product,
                     steps: [...product.steps, newStep]
                 }));
-    
+
                 return {
                     ...prev,
                     products: updatedProducts
@@ -189,7 +197,7 @@ const Layout = () => {
             });
         }
     };
-    
+
 
     const Updateproduct = () => {
         updatestore({ storeName: "Workflows", updatedData: Workflows })
@@ -246,7 +254,7 @@ const Layout = () => {
                                 <div className='bg-dark text-white p-2 mb-2 rounded-3 d-flex'>
                                     <span className='me-auto my-auto'>{Workflowtoshow?.name} </span>
                                     {
-                                        preview == null && <Button variant='success' onClick={AddWorkflowstodb} className='my-auto ms-auto'>save New Workflow</Button>
+                                        (isAdding || preview == null) && <span onClick={AddWorkflowstodb} className='my-auto ms-auto bg-success rounded-1 py-1 px-2'>Save New Workflow</span>
                                     }
                                 </div>
                             }
@@ -263,14 +271,18 @@ const Layout = () => {
                                                 <span className='m-auto fs-6' >+</span>
                                             </div>
                                         </div>
-
+                                        {ActiveCard != null && <Trash onClick={(e) => {
+                                            e.stopPropagation()
+                                            // deleteDataById({ storeName: "Workflows", id: i.id })
+                                            // SetFetch(i => !i)
+                                        }} className='position-absolute top-0 bg-danger text-white rounded-2 p-1 m-2 z-3' style={{ right: "80px" }} />}
                                         {preview !== null && <Button
                                             onClick={Updateproduct}
                                             className='position-absolute end-0 bottom-0 z-3'
                                             variant='success'>{preview !== null ? "Update WorkFlow" : "Save WorkFlow"}
                                         </Button>}
                                         {
-                                            Workflowtoshow?.products.map((i, index) => {
+                                            (isAdding || preview != null) && Workflowtoshow?.products.map((i, index) => {
                                                 return <Component key={index} editFunction={editFunction} setActiveCard={setActiveCard} ActiveCard={ActiveCard} id={index} text={i.name} config={i?.config} />
                                             })
                                         }
@@ -289,34 +301,34 @@ const Layout = () => {
                                     <Form className='p-2'>
                                         <div className='py-2 sticky-top bg-dark'>Add Setups</div>
                                         <input placeholder='Workflow Name'
-                                            value={Workflowtoshow?.products[ActiveCard || 0]?.name}
-                                            // value={preview != null ? Workflows[preview]?.products[ActiveCard || 0]?.name : NewWorkflow.products[ActiveCard || 0]?.name}
+                                            value={(isAdding || preview != null) ? Workflowtoshow?.products[ActiveCard || 0]?.name : ""}
                                             onChange={handleProductnamechange} className='w-100 mb-3' />
                                         <div className='w-100 ' style={{ minHeight: "100px" }}>
                                             {
-                                                // (preview != null ? Workflows[preview]?.products[ActiveCard || 0]?.steps : NewWorkflow.products[ActiveCard || 0]?.steps)
-                                                Workflowtoshow?.products[ActiveCard || 0]?.steps.map((i, v) => (
+                                                (isAdding || preview != null) && Workflowtoshow?.products[ActiveCard || 0]?.steps.map((i, v) => (
                                                     <div key={v} className='w-100 bg-white text p-2 my-1'>
                                                         <input readOnly className='w-100' value={i?.name && i?.name} />
-                                                        <Row className=' p-2'>{
-                                                            stepinput.map((o, index) => (
+                                                        <Row className=' p-2'>
+                                                            {
+                                                                stepinput.map((o, index) => (
+                                                                    <Col key={index} className='bg-dark-subtle d-flex flex-column rounded-2 text-center mx-1 p-2 justify-content-center align-content-center'>
+                                                                        <input value={o.value}
+                                                                            onChange={() => handleSetupscheckboxChange(v, o.value)}
+                                                                            checked={i?.[o.value] === true || false}
+                                                                            className="mx-auto" type='checkbox' name={o.value} id={o.value} />
+                                                                        <div className=''>
+                                                                            <label className='d-inline' htmlFor={o.value}>
+                                                                                <Image src={o.img} width={30} className='p-1' />
+                                                                            </label>
+                                                                        </div>
+                                                                    </Col>
+                                                                ))
+                                                            }
 
-                                                                <Col key={index} className='bg-dark-subtle d-flex flex-column rounded-2 text-center mx-1 p-2 justify-content-center align-content-center'>
-                                                                    <input value={o.value}
-                                                                        onChange={() => handleSetupscheckboxChange(v, o.value)}
-                                                                        checked={i?.[o.value] === true || false}
-                                                                        className="mx-auto" type='checkbox' name={o.value} id={o.value} />
-                                                                    <div className=''>
-                                                                        <label className='d-inline' htmlFor={o.value}>
-                                                                            <Image src={o.img} width={30} className='p-1' />
-                                                                        </label>
-                                                                    </div>
-                                                                </Col>
-                                                            ))
-                                                        }
                                                         </Row>
                                                     </div>
-                                                ))}
+                                                ))
+                                            }
                                             <div onClick={Addsteps} className='bg-dark-subtle fs-3 cursor-pointer py-1 hidescrollbar my-2 text-dark text-capitalize text-center'>
                                                 +
                                             </div>
@@ -355,6 +367,12 @@ const Layout = () => {
                                 Workflows.map((i, index) => (
                                     <Col key={index} lg="3" md="3" sm="3" xs="3" xxl="3" onClick={() => { setPreview(index) }} className="text-center p-2 cursor-pointer">
                                         <div className={`p-3 bg-dark-subtle position-relative text-dark ${preview == index && "border border-info border-2"}`}>
+                                            <Trash onClick={(e) => {
+                                                e.stopPropagation()
+                                                deleteDataById({ storeName: "Workflows", id: i.id })
+                                                SetFetch(i => !i)
+                                            }} className='position-absolute top-0 end-0 bg-danger text-white rounded-2 p-1 m-1' />
+
                                             <Trash onClick={(e) => {
                                                 e.stopPropagation()
                                                 deleteDataById({ storeName: "Workflows", id: i.id })
