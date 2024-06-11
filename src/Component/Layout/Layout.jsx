@@ -254,7 +254,7 @@ const Layout = () => {
                                 <div className='bg-dark text-white p-2 mb-2 rounded-3 d-flex'>
                                     <span className='me-auto my-auto'>{Workflowtoshow?.name} </span>
                                     {
-                                        (isAdding || preview == null) && <span onClick={AddWorkflowstodb} className='my-auto ms-auto bg-success rounded-1 py-1 px-2'>Save New Workflow</span>
+                                        (isAdding && preview == null) && <span onClick={AddWorkflowstodb} className='my-auto ms-auto bg-success rounded-1 py-1 px-2'>Save New Workflow</span>
                                     }
                                 </div>
                             }
