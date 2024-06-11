@@ -21,30 +21,62 @@ const stepinput = [
 ]
 
 const Layout = () => {
-    const [item, Setitem] = useState(["item 1"])
+    const [step, Setstep] = useState(["step 1"])
     const [ActiveCard, setActiveCard] = useState(null)
-    const [modalshow, setModalShow] = useState(false)
+    const [IneditMode, setIneditMode] = useState(false)
     const [preview, setPreview] = useState(null);
     const [Workflows, SetWorkflows] = useState([])
     const [Fetch, SetFetch] = useState(true)
-    const [newProduct, SetNewProduct] = useState([])
+    const [NewWorkflow, SetNewWorkflow] = useState({
+        "name": `Workflow ${Workflows.length + 1}`,
+        "products": [{ name: "one", config: { width: "200", height: "100", x: 0, y: 30, shape: "box" }, steps: [{ name: "stnklm", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] }]
+    })
+    const [Workflowtoshow, SetWorkflowtoshow] = useState(preview != null ? Workflows[preview] : NewWorkflow)
+    // const Workflowtoshow = preview != null ? Workflows[preview] : NewWorkflow
 
-    const AddWorkflowstodb = async ({ obj }) => {
-        const data = await addData({ storeName: "Workflows", newData: obj })
+
+    useEffect(() => {
+        SetNewWorkflow({
+            "name": `Workflow ${Workflows.length + 1}`,
+            "products": [{ name: "one", config: { width: "200", height: "100", x: 0, y: 30, shape: "box" }, steps: [{ name: "stnklm", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] }]
+        })
+    }, [Workflows])
+
+
+    useEffect(() => {
+        SetWorkflowtoshow(preview != null ? Workflows[preview] : NewWorkflow)
+    }, [Workflows, preview,ActiveCard,NewWorkflow])
+
+
+    const AddWorkflowstodb = async () => {
+        await addData({ storeName: "Workflows", newData: NewWorkflow })
+        SetFetch(i => !i)
     }
+    const handleSetupscheckboxChange = (stepIndex, checkboxValue) => {
+        console.log("kjm");
+        if (preview !== null && ActiveCard !== null) {
+            SetWorkflows(prev => {
+                console.log("Previous State:", prev);
+                const updatedWorkflows = [...prev];
+                const updatedSteps = [...updatedWorkflows[preview].products[ActiveCard].steps];
+
+                updatedSteps[stepIndex] = {
+                    ...updatedSteps[stepIndex],
+                    [checkboxValue]: !updatedSteps[stepIndex][checkboxValue],
+                };
+                updatedWorkflows[preview].products[ActiveCard].steps = updatedSteps;
+
+                console.log("Updated State:", updatedWorkflows);
+                return updatedWorkflows;
+            });
+        }
+    };
+
 
     const getWorkflows = async () => {
         const data = await getAllData({ storeName: "Workflows" })
         SetWorkflows(data)
     }
-    useEffect(() => {
-        if (preview !== null && Workflows[preview]) {
-            // console.log(Workflows[preview]);
-        }
-    }, [Workflows, preview])
-    useEffect(() => {
-        setActiveCard(null)
-    }, [preview])
     useEffect(() => {
         getWorkflows()
     }, [Fetch])
@@ -59,9 +91,8 @@ const Layout = () => {
     };
 
     const AddNewProduct = ({ type }) => {
-        // const config = productConfig({ type })
-        const newProduct = { name: "Edit this name", config: productConfig({ type }) };
-        // console.log({ name: "Edit this name", config });
+        const newProduct = { name: "Edit this name", config: productConfig({ type }), steps: [{ name: "stnklm", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] };
+
         if (preview != null) {
             SetWorkflows(prev => {
                 const updatedWorkflows = [...prev];
@@ -71,6 +102,14 @@ const Layout = () => {
                 };
                 return updatedWorkflows;
             })
+        } else {
+            SetNewWorkflow(prev => {
+                console.log(prev);
+                return ({
+                    ...prev,
+                    products: [...prev.products, newProduct],
+                })
+            });
         }
     }
 
@@ -79,16 +118,79 @@ const Layout = () => {
     const fobj = {
         "name": "Workflow 2",
         "products": [
-            { name: "one", config: { width: "200", height: "100", x: 0, y: 30, shape: "box" }, wp: true, msg: false },
-            { name: "two", config: { width: "100", height: "200", x: 220, y: 130, shape: "box" }, wp: true, msg: false },
-            { name: "three", config: { width: "300", height: "20", x: 200, y: 350, shape: "rounded" }, wp: true, msg: false },
+            { name: "one", config: { width: "200", height: "100", x: 0, y: 30, shape: "box" }, steps: [{ name: "stnklm", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] },
+            { name: "two", config: { width: "100", height: "200", x: 220, y: 130, shape: "box" }, steps: [{ name: "ghgjk", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] },
+            { name: "three", config: { width: "300", height: "20", x: 200, y: 350, shape: "rounded" }, steps: [{ name: "rtyu", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] },
         ]
     }
     // AddWorkflowstodb({ obj: fobj })
 
+    // const Addsteps = () => {
+    //     const newStep = { name: `step ${Workflowtoshow.products[ActiveCard ||0]?.steps.length + 1}`, Wp: false, CRM: false, Erp: false, SMS: false, Mail: false };
+
+    //     if (preview !== null) {
+    //         SetWorkflows(prev => {
+    //             const updatedWorkflows = [...prev];
+    //             const currentWorkflow = updatedWorkflows[preview];
+
+    //             currentWorkflow.products = currentWorkflow.products.map(product => ({
+    //                 ...product,
+    //                 steps: [...product.steps, newStep]
+    //             }));
+
+    //             return updatedWorkflows;
+    //         });
+    //     } else {
+    //         SetNewWorkflow(prev => {
+    //             const updatedProducts = prev.products.map(product => ({
+    //                 ...product,
+    //                 steps: [...product.steps, newStep]
+    //             }));
+
+    //             return {
+    //                 ...prev,
+    //                 products: updatedProducts
+    //             };
+    //         });
+    //     }
+    // };
     const Addsteps = () => {
-        Setitem(prevItems => [...prevItems, `item ${prevItems.length + 1}`]);
+        const newStep = { name: `step ${Workflowtoshow.products[ActiveCard || 0]?.steps.length + 1}`, Wp: false, CRM: false, Erp: false, SMS: false, Mail: false };
+    
+        if (preview !== null) {
+            SetWorkflows(prev => {
+                if (!prev || prev.length <= preview) return prev; // Prevent errors if workflows are not yet loaded
+    
+                const updatedWorkflows = [...prev];
+                const currentWorkflow = updatedWorkflows[preview];
+    
+                if (!currentWorkflow?.products) return prev; // Prevent errors if products are not yet loaded
+    
+                currentWorkflow.products = currentWorkflow.products.map(product => ({
+                    ...product,
+                    steps: [...product.steps, newStep]
+                }));
+    
+                return updatedWorkflows;
+            });
+        } else {
+            console.log("kj",NewWorkflow);
+
+            SetNewWorkflow(prev => {
+                const updatedProducts = prev.products.map(product => ({
+                    ...product,
+                    steps: [...product.steps, newStep]
+                }));
+    
+                return {
+                    ...prev,
+                    products: updatedProducts
+                };
+            });
+        }
     };
+    
+
     const Updateproduct = () => {
         updatestore({ storeName: "Workflows", updatedData: Workflows })
         console.log(Workflows);
@@ -128,6 +230,10 @@ const Layout = () => {
         }
     };
 
+    const clearWorkflowSelected = () => {
+        setPreview(null)
+    }
+
 
 
     return (
@@ -137,8 +243,11 @@ const Layout = () => {
                     <Container fluid className='p-0 d-flex justify-content-evenly h-100 w-100 align-items-center align-items-start'>
                         <div>
                             {
-                                <div className='bg-dark text-white p-2 mb-2 rounded-3'>
-                                    {Workflows[preview]?.name || "workflow name"}
+                                <div className='bg-dark text-white p-2 mb-2 rounded-3 d-flex'>
+                                    <span className='me-auto my-auto'>{Workflowtoshow?.name} </span>
+                                    {
+                                        preview == null && <Button variant='success' onClick={AddWorkflowstodb} className='my-auto ms-auto'>save New Workflow</Button>
+                                    }
                                 </div>
                             }
                             <div style={{ height: "500px", width: "600px" }} className='rounded-3 bg-dark d-inline-block'>
@@ -154,19 +263,15 @@ const Layout = () => {
                                                 <span className='m-auto fs-6' >+</span>
                                             </div>
                                         </div>
-                                        
+
                                         {preview !== null && <Button
                                             onClick={Updateproduct}
                                             className='position-absolute end-0 bottom-0 z-3'
                                             variant='success'>{preview !== null ? "Update WorkFlow" : "Save WorkFlow"}
                                         </Button>}
                                         {
-                                            preview !== null && Workflows[preview] && [Workflows[preview]].map((i, index) => {
-                                                return (
-                                                    i?.products.map((i, index) => (
-                                                        <Component key={index} editFunction={editFunction} setActiveCard={setActiveCard} ActiveCard={ActiveCard} id={index} text={i.name} config={i?.config} />
-                                                    ))
-                                                )
+                                            Workflowtoshow?.products.map((i, index) => {
+                                                return <Component key={index} editFunction={editFunction} setActiveCard={setActiveCard} ActiveCard={ActiveCard} id={index} text={i.name} config={i?.config} />
                                             })
                                         }
                                     </div>
@@ -183,31 +288,35 @@ const Layout = () => {
                                 <div className='border border-dark border-3 h-100 w-100 rounded-3 w-100 position-relative overflow-auto hidescrollbar'>
                                     <Form className='p-2'>
                                         <div className='py-2 sticky-top bg-dark'>Add Setups</div>
-                                        {/* {console.log(typeof(Workflows[preview]),Workflows[preview]?.products[ActiveCard])} */}
-                                        <input placeholder='Workflow Name' value={Workflows[preview]?.products[ActiveCard]?.name || "Select any product"} onChange={handleProductnamechange} className='w-100 mb-3' />
+                                        <input placeholder='Workflow Name'
+                                            value={Workflowtoshow?.products[ActiveCard || 0]?.name}
+                                            // value={preview != null ? Workflows[preview]?.products[ActiveCard || 0]?.name : NewWorkflow.products[ActiveCard || 0]?.name}
+                                            onChange={handleProductnamechange} className='w-100 mb-3' />
                                         <div className='w-100 ' style={{ minHeight: "100px" }}>
-                                            {item.map((i, v) => (
-                                                // <div key={v} className='bg-dark-subtle cursor-pointer py-2 hidescrollbar my-2 text-dark text-capitalize text-center'>
-                                                //     {i}
-                                                // </div>
-                                                <div className='w-100 bg-white text p-2 my-1'>
-                                                    <input className='w-100' />
-                                                    <Row className=' p-2'>{
-                                                        stepinput.map((o) => (
+                                            {
+                                                // (preview != null ? Workflows[preview]?.products[ActiveCard || 0]?.steps : NewWorkflow.products[ActiveCard || 0]?.steps)
+                                                Workflowtoshow?.products[ActiveCard || 0]?.steps.map((i, v) => (
+                                                    <div key={v} className='w-100 bg-white text p-2 my-1'>
+                                                        <input readOnly className='w-100' value={i?.name && i?.name} />
+                                                        <Row className=' p-2'>{
+                                                            stepinput.map((o, index) => (
 
-                                                            <Col className='bg-dark-subtle d-flex flex-column rounded-2 text-center mx-1 p-2 justify-content-center align-content-center'>
-                                                                <input value={o.value} className="mx-auto" type='checkbox' id='wp' />
-                                                                <div className=''>
-                                                                    <label className='d-inline' htmlFor="wp">
-                                                                        <Image src={o.img} width={30} className='p-1' />
-                                                                    </label>
-                                                                </div>
-                                                            </Col>
-                                                        ))
-                                                    }
-                                                    </Row>
-                                                </div>
-                                            ))}
+                                                                <Col key={index} className='bg-dark-subtle d-flex flex-column rounded-2 text-center mx-1 p-2 justify-content-center align-content-center'>
+                                                                    <input value={o.value}
+                                                                        onChange={() => handleSetupscheckboxChange(v, o.value)}
+                                                                        checked={i?.[o.value] === true || false}
+                                                                        className="mx-auto" type='checkbox' name={o.value} id={o.value} />
+                                                                    <div className=''>
+                                                                        <label className='d-inline' htmlFor={o.value}>
+                                                                            <Image src={o.img} width={30} className='p-1' />
+                                                                        </label>
+                                                                    </div>
+                                                                </Col>
+                                                            ))
+                                                        }
+                                                        </Row>
+                                                    </div>
+                                                ))}
                                             <div onClick={Addsteps} className='bg-dark-subtle fs-3 cursor-pointer py-1 hidescrollbar my-2 text-dark text-capitalize text-center'>
                                                 +
                                             </div>
@@ -225,10 +334,22 @@ const Layout = () => {
                     </Container >
                 </Container >
             </Container >
-            <Container style={{ width: "1060px" }} className=''>
-                <Container fluid className='p-0 d-flex justify-content-evenly h-100 w-100 align-items-center align-items-start'>
-                    <div className='rounded-3 bg-dark p-2 w-100'>
+            <Container style={{ width: "1060px" }} className='position-relative'>
+                <Container fluid className='p-0 d-flex justify-align-content-around h-100 w-100 align-items-center '>
+                    <div className='rounded-3 bg-dark p-2 w-100 position-relative'>
                         <p className='border-bottom border-dark border-2 w-100 p-2 sticky-top z-3'>layouts</p>
+                        {
+                            preview != null && (
+                                <Button
+                                    className='position-absolute top-0 end-0 m-1 z-3'
+                                    onClick={() => {
+                                        clearWorkflowSelected();
+                                    }}
+                                >
+                                    Clear selected Workflow
+                                </Button>
+                            )
+                        }
                         <Row className=' h-100 w-100 p-2'>
                             {
                                 Workflows.map((i, index) => (
@@ -261,7 +382,8 @@ const Component = ({ position, id, text, editFunction, ActiveCard, setActiveCard
         height: config?.height || 100,
         x: config?.x || 0,
         y: config?.y || 0,
-        img: config?.img
+        img: config?.img,
+        shape: config?.shape
     });
 
     useEffect(() => {
@@ -323,9 +445,9 @@ const Component = ({ position, id, text, editFunction, ActiveCard, setActiveCard
             // className={`rounded-1 text-dark text-center bg-dark-subtle d-flex ${ActiveCard === id ? 'border border-3 border-primary' : ''}`}
             className={`${config?.shape == "rounded" && "rounded-2"} text-dark text-center bg-dark-subtle d-flex ${ActiveCard == id && "border border-2 border-info"}`}
         >
-            <div className='w-100 position-relative Layoutcard d-flex'>
+            <div className={`w-100 position-relative Layoutcard d-flex ${config?.shape == "rounded" && "rounded-2"}`}>
                 <Image onClick={() => triggerImageInput()} style={{ minHeight: "20px", minWidth: "20px" }} src='https://uxwing.com/wp-content/themes/uxwing/download/editing-user-action/edit-round-line-icon.png' width={"10%"} className='position-absolute ratio-1x1 z-3 m-2 layout-cardimg top-0 end-0  bg-light text-white rounded-circle' />
-                <div className='p-1 w-100 d-flex'
+                <div className={`p-1 w-100 d-flex ${config?.shape == "rounded" && "rounded-2"}`}
                     style={{
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',

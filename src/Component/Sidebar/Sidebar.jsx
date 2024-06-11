@@ -30,7 +30,7 @@ const Sidebar = () => {
               <span className='ms-2'>BOYD</span></Link>
           <span className='ms-2'>Workspace settings</span>
           {pathobj.map((i) => (
-            <Link className='text-white d-block py-4 link-offset-3-hover nav-underline' to={i.path}>
+            <Link key={i.text} className='text-white d-block py-4 link-offset-3-hover nav-underline' to={i.path}>
               {/* <Settings color='white' /> */}
               <span className='ms-2'>{i.text}</span></Link>
           ))}
