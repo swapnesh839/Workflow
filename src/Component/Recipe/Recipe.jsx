@@ -150,14 +150,11 @@ const Recipe = () => {
                     <div className='border w-100 h-100 border-3 rounded-3 w-100 boundingbox p-2'>
                       <div className='h-100 w-100 position-relative text-white position-static'>
                         {(isAdding && preview === null) && (
-                          <div className=' text-white p-2 mb-2 rounded-3 d-flex'>
+                          <div className=' text-white p-2 m-1 rounded-3 position-absolute bottom-0 end-0 d-flex'>
                             {/* <span className='me-auto my-auto'>{NewRecipe.name}</span> */}
-                            <span onClick={saveNewRecipeToDB} className='my-auto ms-auto bg-success rounded-1 py-1 px-2 cursor-pointer z-3'>Save New Recipe</span>
+                            <span onClick={saveNewRecipeToDB} className='my-auto ms-auto bg-success rounded-1 py-1 px-2 cursor-pointer z-3'>Save</span>
                           </div>
                         )}
-                        {
-                          console.log(Array.isArray(Recipestoshow),NewRecipe)
-                        }
                         {/* {
                           (isAdding || preview != null) && Recipestoshow?.products.map((i, index) => {
                             return <Component key={index} index={index}
