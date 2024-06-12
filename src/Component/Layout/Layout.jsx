@@ -30,7 +30,7 @@ const Layout = () => {
     const [isAdding, SetisAdding] = useState(false)
     const [NewWorkflow, SetNewWorkflow] = useState({
         "name": `Workflow ${Workflows.length + 1}`,
-        "products": [{ name: "one", config: { width: "200", height: "100", x: 0, y: 30, shape: "box" }, steps: [{ name: "stnklm", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] }]
+        "products": [{ name: "one", config: { width: "200", height: "100", x: 0, y: 30, shape: "box" }, steps: [{ name: "step-1", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] }]
     })
     const [Workflowtoshow, SetWorkflowtoshow] = useState(preview != null ? Workflows[preview] : isAdding && NewWorkflow)
 
@@ -38,7 +38,7 @@ const Layout = () => {
     useEffect(() => {
         SetNewWorkflow({
             "name": `Workflow ${Workflows.length + 1}`,
-            "products": [{ name: "one", config: { width: "200", height: "100", x: 0, y: 30, shape: "box" }, steps: [{ name: "stnklm", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] }]
+            "products": [{ name: "one", config: { width: "200", height: "100", x: 0, y: 30, shape: "box" }, steps: [{ name: "step-1", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] }]
         })
     }, [Workflows])
 
@@ -129,7 +129,7 @@ const Layout = () => {
 
     const AddNewProduct = ({ type }) => {
         SetisAdding(true)
-        const newProduct = { name: "Edit this name", config: productConfig({ type }), steps: [{ name: "stnklm", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] };
+        const newProduct = { name: "Edit this name", config: productConfig({ type }), steps: [{ name: "step-1", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] };
 
         if (preview != null) {
             SetWorkflows(prev => {
@@ -156,7 +156,7 @@ const Layout = () => {
     const fobj = {
         "name": "Workflow 2",
         "products": [
-            { name: "one", config: { width: "200", height: "100", x: 0, y: 30, shape: "box" }, steps: [{ name: "stnklm", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] },
+            { name: "one", config: { width: "200", height: "100", x: 0, y: 30, shape: "box" }, steps: [{ name: "step-1", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] },
             { name: "two", config: { width: "100", height: "200", x: 220, y: 130, shape: "box" }, steps: [{ name: "ghgjk", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] },
             { name: "three", config: { width: "300", height: "20", x: 200, y: 350, shape: "rounded" }, steps: [{ name: "rtyu", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] },
         ]
