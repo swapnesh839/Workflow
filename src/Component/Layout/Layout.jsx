@@ -10,7 +10,7 @@ import CRM from "../../assets/CRM.png"
 import SMS from "../../assets/SMS.png"
 import Mail from "../../assets/Mail.png"
 import Erp from "../../assets/erp.svg"
-import { Trash } from 'lucide-react';
+import { Trash, Upload } from 'lucide-react';
 
 const stepinput = [
     { value: "Wp", img: Wp },
@@ -29,18 +29,24 @@ const Layout = () => {
     const [Fetch, SetFetch] = useState(true)
     const [isAdding, SetisAdding] = useState(false)
     const [NewWorkflow, SetNewWorkflow] = useState({
-        "name": `Workflow ${Workflows.length + 1}`,
+        "name": `Name of the Layout`,
         "products": [{ name: "one", config: { width: "200", height: "100", x: 0, y: 30, shape: "box" }, steps: [{ name: "step-1", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] }]
     })
     const [Workflowtoshow, SetWorkflowtoshow] = useState(preview != null ? Workflows[preview] : isAdding && NewWorkflow)
 
 
     useEffect(() => {
-        SetNewWorkflow({
-            "name": `Workflow ${Workflows.length + 1}`,
-            "products": [{ name: "one", config: { width: "200", height: "100", x: 0, y: 30, shape: "box" }, steps: [{ name: "step-1", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] }]
-        })
-    }, [Workflows])
+        if (preview != null) {
+            SetisAdding(true)
+        }
+    }, [preview])
+
+    // useEffect(() => {
+    //     SetNewWorkflow({
+    //         "name": `Workflow ${Workflows.length + 1}`,
+    //         "products": [{ name: "one", config: { width: "200", height: "100", x: 0, y: 30, shape: "box" }, steps: [{ name: "step-1", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] }]
+    //     })
+    // }, [Workflows])
 
 
     useEffect(() => {
@@ -104,7 +110,7 @@ const Layout = () => {
                 });
             }
         }
-        else{
+        else {
             window.alert("Select an ActiveCard");
         }
     };
@@ -129,7 +135,7 @@ const Layout = () => {
 
     const AddNewProduct = ({ type }) => {
         SetisAdding(true)
-        const newProduct = { name: "Edit this name", config: productConfig({ type }), steps: [{ name: "step-1", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] };
+        const newProduct = { name: "Machine Name", config: productConfig({ type }), steps: [{ name: "step-1", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] };
 
         if (preview != null) {
             SetWorkflows(prev => {
@@ -241,159 +247,197 @@ const Layout = () => {
     const clearWorkflowSelected = () => {
         setPreview(null)
     }
+    const handleWorkflowNameChange = (e) => {
+        const newName = e.target.value;
+        if (preview !== null) {
+            SetWorkflows(prev => {
+                const updatedWorkflows = [...prev];
+                updatedWorkflows[preview].name = newName;
+                return updatedWorkflows;
+            });
+        } else {
+            SetNewWorkflow(prev => ({
+                ...prev,
+                name: newName,
+            }));
+        }
+    };
+
 
 
 
     return (
-        <>
-            <Container>
-                <Container fluid className='Layout bg-white h-100 p-2' style={{ width: "1100px" }}>
-                    <Container fluid className='p-0 d-flex justify-content-evenly h-100 w-100 align-items-center align-items-start'>
-                        <div>
-                            {
-                                <div className='bg-dark text-white p-2 mb-2 rounded-3 d-flex'>
-                                    <span className='me-auto my-auto'>{Workflowtoshow?.name} </span>
+        <Container className='overflow-auto'>
+            <Row>
+                <Col>
+                    <Container>
+                        <Container fluid className='Layout bg-white h-100 p-2'>
+                            <Container fluid className='p-0 d-flex justify-content-evenly h-100 w-100 align-items-center align-items-start'>
+
+                                <div className='position-relative'>
+
                                     {
-                                        (isAdding && preview == null) && <span onClick={AddWorkflowstodb} className='my-auto ms-auto bg-success rounded-1 py-1 px-2'>Save New Workflow</span>
+                                        <div className=' text-white p-2 mb-2 rounded-3 d-flex'>
+                                            {
+                                                isAdding && <input className='me-auto my-auto layout-naneinput' onChange={(e) => { handleWorkflowNameChange(e) }} value={Workflowtoshow?.name} />
+                                            }
+                                        </div>
                                     }
-                                </div>
-                            }
-                            <div style={{ height: "500px", width: "600px" }} className='rounded-3 bg-dark d-inline-block'>
-                                <div className='border w-100 h-100 border-dark border-3 rounded-3 w-100 boundingbox p-2'>
-                                    <div className='h-100 w-100 position-relative' >
-                                        <div style={{ width: "40px", height: "40px" }} onClick={() => { AddNewProduct({ type: "box" }) }} className='d-inline-block position-absolute cursor-pointer bg-white top-0 end-0 p-1 z-3 text-white'>
-                                            <div className='h-100 w-100 bg-black d-flex'>
-                                                <span className='m-auto fs-6' >+</span>
+                                    <div style={{ height: "500px", width: "600px" }} className='rounded-3  d-inline-block position-relative'>
+                                        <div className='position-absolute top-50 d-flex flex-column p-1 translate-middle' style={{ left: "-20px" }}>
+
+                                            <div style={{ width: "40px", height: "40px" }} onClick={() => { AddNewProduct({ type: "box" }) }} className='d-inline-block  cursor-pointer p-0 bg-white m-1  p-1 z-3 text-white'>
+                                                <div className='h-100 w-100 boeder-1 border d-flex' style={{ backgroundColor: "#9333ea" }}>
+                                                    <span className='m-auto fs-6' >+</span>
+                                                </div>
+                                            </div>
+                                            {/* <div style={{ width: "40px", height: "40px"}} onClick={() => { AddNewProduct({ type: "rounded" }) }} className='d-d-inline-block cursor-pointer p-0 m-1 bg-white z-3 text-white'> */}
+                                            <div style={{ width: "40px", height: "40px" }} onClick={() => { AddNewProduct({ type: "rounded" }) }} className='d-inline-block  cursor-pointer p-0 bg-white m-1  p-1 z-3 text-white'>
+                                                <div className='h-100 w-100 boeder-1 border d-flex rounded-2' style={{ backgroundColor: "#9333ea" }}>
+                                                    <span className='m-auto fs-6' >+</span>
+                                                </div>
+                                            </div>
+                                            <div style={{ width: "40px", height: "40px" }} onClick={() => { AddNewProduct({ type: "circle" }) }} className='d-inline-block  cursor-pointer p-0 bg-white m-1  p-1 z-3 text-white'>
+                                                <div className='h-100 w-100 boeder-1 border d-flex rounded-circle' style={{ backgroundColor: "#9333ea" }}>
+                                                    <span className='m-auto fs-6' >+</span>
+                                                </div>
                                             </div>
                                         </div>
-                                        <div style={{ width: "40px", height: "40px", right: "45px" }} onClick={() => { AddNewProduct({ type: "rounded" }) }} className='d-d-inline-block cursor-pointer position-absolute top-0 p-1 bg-white z-3 text-white'>
-                                            <div className='h-100 w-100 bg-black rounded-2 d-flex'>
-                                                <span className='m-auto fs-6' >+</span>
+                                        <div className='border w-100 h-100  border-3 rounded-3 w-100 boundingbox p-2'>
+                                            <div className='h-100 w-100 position-relative' >
+
+                                                {ActiveCard != null && <Trash onClick={(e) => {
+                                                    e.stopPropagation()
+                                                    // deleteDataById({ storeName: "Workflows", id: i.id })
+                                                    // SetFetch(i => !i)
+                                                }} className='position-absolute top-0 bg-danger text-white rounded-2 p-1 m-2 z-3' style={{ right: "80px" }} />}
+                                                {preview !== null && <span
+                                                    onClick={Updateproduct}
+                                                    className='position-absolute end-0 bottom-0 z-3 bg-success rounded-1 py-1 px-2 cursor-pointer'
+                                                >{preview !== null ? "Update" : "Save WorkFlow"}
+                                                </span>}
+                                                {
+                                                    (isAdding && preview == null) &&
+                                                    <span onClick={AddWorkflowstodb} className='position-absolute end-0 bottom-0 z-3 bg-success rounded-1 py-1 px-2 cursor-pointer'>Save</span>
+                                                }
+                                                {
+                                                    (isAdding || preview != null) && Workflowtoshow?.products.map((i, index) => {
+                                                        return <Component handleProductnamechange={handleProductnamechange} key={index} editFunction={editFunction} setActiveCard={setActiveCard} ActiveCard={ActiveCard} id={index} text={i.name} config={i?.config} />
+                                                    })
+                                                }
                                             </div>
                                         </div>
-                                        {ActiveCard != null && <Trash onClick={(e) => {
-                                            e.stopPropagation()
-                                            // deleteDataById({ storeName: "Workflows", id: i.id })
-                                            // SetFetch(i => !i)
-                                        }} className='position-absolute top-0 bg-danger text-white rounded-2 p-1 m-2 z-3' style={{ right: "80px" }} />}
-                                        {preview !== null && <Button
-                                            onClick={Updateproduct}
-                                            className='position-absolute end-0 bottom-0 z-3'
-                                            variant='success'>{preview !== null ? "Update WorkFlow" : "Save WorkFlow"}
-                                        </Button>}
-                                        {
-                                            (isAdding || preview != null) && Workflowtoshow?.products.map((i, index) => {
-                                                return <Component key={index} editFunction={editFunction} setActiveCard={setActiveCard} ActiveCard={ActiveCard} id={index} text={i.name} config={i?.config} />
-                                            })
-                                        }
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        <div>
-                            {
-                                <div className='bg-dark text-white p-2 mb-2 rounded-3'>
-                                    {"Product setup"}
-                                </div>
-                            }
-                            <div style={{ height: "500px", width: "400px" }} className='rounded-3 bg-dark d-inline-block'>
-                                <div className='border border-dark border-3 h-100 w-100 rounded-3 w-100 position-relative overflow-auto hidescrollbar'>
-                                    <Form className='p-2'>
-                                        <div className='py-2 sticky-top bg-dark'>Add Setups</div>
-                                        <input placeholder='Workflow Name'
-                                            value={(isAdding || preview != null) ? Workflowtoshow?.products[ActiveCard || 0]?.name : ""}
-                                            onChange={handleProductnamechange} className='w-100 mb-3' />
-                                        <div className='w-100 ' style={{ minHeight: "100px" }}>
-                                            {
-                                                (isAdding || preview != null) && Workflowtoshow?.products[ActiveCard || 0]?.steps.map((i, v) => (
-                                                    <div key={v} className='w-100 bg-white text p-2 my-1'>
-                                                        <input readOnly className='w-100' value={i?.name && i?.name} />
-                                                        <Row className=' p-2'>
-                                                            {
-                                                                stepinput.map((o, index) => (
-                                                                    <Col key={index} className='bg-dark-subtle d-flex flex-column rounded-2 text-center mx-1 p-2 justify-content-center align-content-center'>
-                                                                        <input value={o.value}
-                                                                            onChange={() => handleSetupscheckboxChange(v, o.value)}
-                                                                            checked={i?.[o.value] === true || false}
-                                                                            className="mx-auto" type='checkbox' name={o.value} id={o.value} />
-                                                                        <div className=''>
-                                                                            <label className='d-inline' htmlFor={o.value}>
-                                                                                <Image src={o.img} width={30} className='p-1' />
-                                                                            </label>
-                                                                        </div>
-                                                                    </Col>
-                                                                ))
-                                                            }
+                                {(ActiveCard != null) && <div>
+                                    {
+                                        <div className='text-black p-2 mb-2'>
+                                            <span className='border-bottom border-2 p-1'>{"Product setup"}</span>
+                                        </div>
+                                    }
+                                    <div style={{ height: "500px", width: "400px" }} className='rounded-3  d-inline-block'>
+                                        <div className='border  border-3 h-100 w-100 rounded-3 w-100 position-relative overflow-auto hidescrollbar'>
+                                            <Form className='p-2'>
+                                                <div className='py-2 sticky-top text-black bg-white'>{(isAdding || preview != null) ? Workflowtoshow?.products[ActiveCard || 0]?.name : ""} Workflow</div>
+                                                {/* <input placeholder='Workflow Name'
+                                                    value={(isAdding || preview != null) ? Workflowtoshow?.products[ActiveCard || 0]?.name : ""}
+                                                    onChange={handleProductnamechange} className='w-100 mb-3' /> */}
+                                                <div className='w-100 ' style={{ minHeight: "100px" }}>
+                                                    {
+                                                        (isAdding || preview != null) && Workflowtoshow?.products[ActiveCard || 0]?.steps.map((i, v) => (
+                                                            <div key={v} className='w-100 bg-white text p-2 my-1'>
+                                                                <input readOnly className='w-100' value={i?.name && i?.name} />
+                                                                <Row className=' p-2'>
+                                                                    {
+                                                                        stepinput.map((o, index) => (
+                                                                            <Col key={index} className='-subtle d-flex flex-column rounded-2 text-center mx-1 p-2 justify-content-center align-content-center'>
+                                                                                <input value={o.value}
+                                                                                    onChange={() => handleSetupscheckboxChange(v, o.value)}
+                                                                                    checked={i?.[o.value] === true || false}
+                                                                                    className="mx-auto" type='checkbox' name={o.value} id={o.value} />
+                                                                                <div className=''>
+                                                                                    <label className='d-inline' htmlFor={o.value}>
+                                                                                        <Image src={o.img} width={30} className='p-1' />
+                                                                                    </label>
+                                                                                </div>
+                                                                            </Col>
+                                                                        ))
+                                                                    }
 
-                                                        </Row>
+                                                                </Row>
+                                                            </div>
+                                                        ))
+                                                    }
+                                                    <div onClick={Addsteps} className='rounded-2 fs-3 cursor-pointer text-white py-1 my-2 text-dark text-capitalize text-center' style={{ background: "#9333ea" }}>
+                                                        +
                                                     </div>
-                                                ))
-                                            }
-                                            <div onClick={Addsteps} className='bg-dark-subtle fs-3 cursor-pointer py-1 hidescrollbar my-2 text-dark text-capitalize text-center'>
-                                                +
-                                            </div>
+                                                </div>
+                                                <div className='d-flex sticky-bottom bg-white'>
+                                                    <Button size='sm' className='ms-auto m-2 border-0' onClick={AddWorkflowstodb} variant='success'>
+                                                        save
+                                                    </Button>
+                                                </div>
+                                            </Form>
                                         </div>
-                                        <div className='d-flex sticky-bottom bg-dark'>
-                                            <Button size='sm' className='ms-auto m-2' onClick={AddWorkflowstodb} variant='success'>
-                                                save
-                                            </Button>
-                                        </div>
-                                    </Form>
-                                </div>
-                            </div>
-                        </div>
+                                    </div>
+                                </div>}
 
+                            </Container >
+                        </Container >
                     </Container >
-                </Container >
-            </Container >
-            <Container style={{ width: "1060px" }} className='position-relative'>
-                <Container fluid className='p-0 d-flex justify-align-content-around h-100 w-100 align-items-center '>
-                    <div className='rounded-3 bg-dark p-2 w-100 position-relative'>
-                        <p className='border-bottom border-dark border-2 w-100 p-2 sticky-top z-3'>layouts</p>
-                        {
-                            preview != null && (
-                                <Button
-                                    className='position-absolute top-0 end-0 m-1 z-3'
-                                    onClick={() => {
-                                        clearWorkflowSelected();
-                                    }}
-                                >
-                                    Clear selected Workflow
-                                </Button>
-                            )
-                        }
-                        <Row className=' h-100 w-100 p-2'>
-                            {
-                                Workflows.map((i, index) => (
-                                    <Col key={index} lg="3" md="3" sm="3" xs="3" xxl="3" onClick={() => { setPreview(index) }} className="text-center p-2 cursor-pointer">
-                                        <div className={`p-3 bg-dark-subtle position-relative text-dark ${preview == index && "border border-info border-2"}`}>
-                                            <Trash onClick={(e) => {
-                                                e.stopPropagation()
-                                                deleteDataById({ storeName: "Workflows", id: i.id })
-                                                SetFetch(i => !i)
-                                            }} className='position-absolute top-0 end-0 bg-danger text-white rounded-2 p-1 m-1' />
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <Container className='position-relative'>
+                        <Container fluid className='p-0 d-flex justify-align-content-around h-100 w-100 align-items-center '>
+                            <div className='rounded-3  p-2 w-100 position-relative'>
+                                <p className='border-bottom  border-2 w-100 p-2 sticky-top z-3'>layouts</p>
+                                {
+                                    preview != null && (
+                                        <Button
+                                            className='position-absolute top-0 end-0 m-1 z-3'
+                                            onClick={() => {
+                                                clearWorkflowSelected();
+                                            }}
+                                        >
+                                            Clear selected Workflow
+                                        </Button>
+                                    )
+                                }
+                                <Row className=' h-100 w-100 p-2'>
+                                    {
+                                        Workflows.map((i, index) => (
+                                            <Col key={index} lg="3" md="3" sm="3" xs="3" xxl="3" onClick={() => { setPreview(index) }} className="text-center p-2 cursor-pointer">
+                                                <div className={`p-3 -subtle position-relative text-dark ${preview == index && "border border-info border-2"}`}>
+                                                    <Trash onClick={(e) => {
+                                                        e.stopPropagation()
+                                                        deleteDataById({ storeName: "Workflows", id: i.id })
+                                                        SetFetch(i => !i)
+                                                    }} className='position-absolute top-0 end-0 bg-danger text-white rounded-2 p-1 m-1' />
 
-                                            <Trash onClick={(e) => {
-                                                e.stopPropagation()
-                                                deleteDataById({ storeName: "Workflows", id: i.id })
-                                                SetFetch(i => !i)
-                                            }} className='position-absolute top-0 end-0 bg-danger text-white rounded-2 p-1 m-1' />
-                                            {i.name}
-                                        </div>
-                                    </Col>
-                                ))
-                            }
-                        </Row>
-                    </div>
-                </Container>
-            </Container>
-        </>
+                                                    <Trash onClick={(e) => {
+                                                        e.stopPropagation()
+                                                        deleteDataById({ storeName: "Workflows", id: i.id })
+                                                        SetFetch(i => !i)
+                                                    }} className='position-absolute top-0 end-0 bg-danger text-white rounded-2 p-1 m-1' />
+                                                    {i.name}
+                                                </div>
+                                            </Col>
+                                        ))
+                                    }
+                                </Row>
+                            </div>
+                        </Container>
+                    </Container></Col>
+            </Row>
+        </Container>
     )
 }
 
 
 
-const Component = ({ position, id, text, editFunction, ActiveCard, setActiveCard, config }) => {
+const Component = ({ position, id, text, editFunction, ActiveCard, setActiveCard, config, handleProductnamechange }) => {
 
     const [state, setState] = useState({
         width: config?.width || 100,
@@ -460,22 +504,24 @@ const Component = ({ position, id, text, editFunction, ActiveCard, setActiveCard
             minWidth={100}
             minHeight={100}
             bounds="parent"
-            // className={`rounded-1 text-dark text-center bg-dark-subtle d-flex ${ActiveCard === id ? 'border border-3 border-primary' : ''}`}
-            className={`${config?.shape == "rounded" && "rounded-2"} text-dark text-center bg-dark-subtle d-flex ${ActiveCard == id && "border border-2 border-info"}`}
+            style={{ backgroundColor: "#BACFE3" }}
+            // className={`rounded-1 text-dark text-center -subtle d-flex ${ActiveCard === id ? 'border border-3 border-primary' : ''}`}
+            className={`${config?.shape == "rounded" && "rounded-2"} text-dark text-center d-flex p-2 ${ActiveCard == id && "border border-2 border-info"}`}
         >
-            <div className={`w-100 position-relative Layoutcard d-flex ${config?.shape == "rounded" && "rounded-2"}`}>
-                <Image onClick={() => triggerImageInput()} style={{ minHeight: "20px", minWidth: "20px" }} src='https://uxwing.com/wp-content/themes/uxwing/download/editing-user-action/edit-round-line-icon.png' width={"10%"} className='position-absolute ratio-1x1 z-3 m-2 layout-cardimg top-0 end-0  bg-light text-white rounded-circle' />
-                <div className={`p-1 w-100 d-flex ${config?.shape == "rounded" && "rounded-2"}`}
+            <div className={`w-100 position-relative Layoutcard d-flex flex-column ${config?.shape == "rounded" && "rounded-2"}`}>
+                <Upload className='position-absolute top-0 end-0  rounded-circle p-1 text-white m-1 layout-cardimg d-none' style={{ backgroundColor: "#9333EA" }} onClick={() => triggerImageInput()} />
+                <div className={`p-1 w-100 h-100 d-flex ${config?.shape == "rounded" && "rounded-2"}`}
                     style={{
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         backgroundImage: `url(${state.img || Box})`
                     }}>
-                    {/* {!state.img && <p className='m-auto text-dark-emphasis bg-dark-subtle'>change the default image</p>} */}
-                    <p className='mt-auto bg-dark-subtle w-100 mx-auto'>
-                        {text}
-                    </p>
+                    {/* {!state.img && <p className='m-auto text-dark-emphasis -subtle'>change the default image</p>} */}
                 </div>
+                <input placeholder='Workflow Name'
+                    // value={(isAdding || preview != null) ? Workflowtoshow?.products[ActiveCard || 0]?.name : ""}
+                    value={text}
+                    onChange={handleProductnamechange} className='w-100 mb-3 border-0 ' />
             </div>
         </Rnd>
     );

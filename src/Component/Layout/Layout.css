@@ -4,7 +4,25 @@
 .layout-card:hover .layout-cardimg {
     display: inline;
   }
-.layout-cardimg {
+/* .layout-cardimg {
     display: none;
     cursor:pointer;
+  } */
+  *{
+    border-color: #3637A0 !important;
   }
+  .Layout *{
+    border-color: #9333ea !important
+  }
+  .layout-naneinput{
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+    /* border-bottom: 1px !important; */
+  }
+
+  *{
+    outline: 0;
+  }
+
+  

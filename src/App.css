@@ -13,3 +13,7 @@
 .cursor-pointer {
   cursor: pointer !important;
 }
+
+*{
+  border-color: #3637A0 !important;
+}

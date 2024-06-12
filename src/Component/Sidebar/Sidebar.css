@@ -3,8 +3,8 @@
     color: white;
     min-width: 40px;
     transition: all ease-in-out 0.5s !important;
-    width: fit-content;
-    position: absolute;
+    /* width: 900px ; */
+    /* position: absolute; */
     top: 0;
     left: 0;
     z-index: 9000;
@@ -18,11 +18,11 @@
 .navtogglericon:hover{
     background-color: rgba(43, 42, 42, 0.717);
 }
-@media (max-width: 600px) {
+/* @media (max-width: 600px) {
     .open{
       width: 100% !important;
     }
-  }
+  } */
 
 .Navbarnav>li {
     padding: 0;

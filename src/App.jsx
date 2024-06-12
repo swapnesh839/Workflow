@@ -18,7 +18,7 @@ function App() {
   //   console.log(data);
   // },[data])
   return (
-    <Container className='overflow-auto hidescrollbar p-0 vh-100 text-light' fluid>
+    <Container className='p-0 vh-100 text-light d-flex' fluid>
       <Sidebar />
       <Approuter />
     </Container>
