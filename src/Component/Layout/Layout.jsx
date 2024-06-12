@@ -56,7 +56,7 @@ const Layout = () => {
 
     const AddWorkflowstodb = async () => {
         console.log(NewWorkflow);
-        
+
         await addData({ storeName: "Workflows", newData: NewWorkflow })
         SetFetch(i => !i)
         // SetisAdding(false)
@@ -130,7 +130,11 @@ const Layout = () => {
     const productConfig = ({ type } = {}) => {
         if (type == "rounded") {
             return { width: 200, height: 200, x: 0, y: 0, shape: "rounded" };
-        } else {
+        }
+        else if (type == "circle") { 
+            return { width: 200, height: 200, x: 0, y: 0, shape: "circle" };
+        }
+        else {
             return { width: 200, height: 200, x: 0, y: 0, shape: "box" };
         }
     };
@@ -149,13 +153,25 @@ const Layout = () => {
                 return updatedWorkflows;
             })
         } else {
+            // SetNewWorkflow(prev => {
+            //     console.log(prev);
+            //     return ({
+            //         ...prev,
+            //         products: [...prev.products, newProduct],
+            //     })
+            // });
             SetNewWorkflow(prev => {
-                console.log(prev);
-                return ({
+                // If this is the first time adding a product
+                const newProducts = prev.products.length === 1 && prev.products[0].name === "one" && prev.products[0].steps.length === 1 && prev.products[0].steps[0].name === "step-1"
+                    ? [newProduct]
+                    : [...prev.products, newProduct];
+
+                return {
                     ...prev,
-                    products: [...prev.products, newProduct],
-                })
+                    products: newProducts,
+                };
             });
+
         }
     }
 
@@ -497,22 +513,29 @@ const Component = ({ position, id, text, editFunction, ActiveCard, setActiveCard
             bounds="parent"
             style={{ backgroundColor: "#BACFE3" }}
             // className={`rounded-1 text-dark text-center -subtle d-flex ${ActiveCard === id ? 'border border-3 border-primary' : ''}`}
-            className={`${config?.shape == "rounded" && "rounded-2"} text-dark text-center d-flex p-2 ${ActiveCard == id && "border border-2 border-info"}`}
+            className={`
+                ${config?.shape == "rounded" && "rounded-2"} {"}
+                ${config?.shape == "circle" && "rounded-circle"}
+             text-dark text-center d-flex p-2 ${ActiveCard == id && "border border-2 border-info"}`}
         >
-            <div className={`w-100 position-relative Layoutcard d-flex flex-column ${config?.shape == "rounded" && "rounded-2"}`}>
+            <div className={`w-100 position-relative Layoutcard d-flex flex-column
+                 ${config?.shape == "rounded" && "rounded-2"} {""}
+                 ${config?.shape == "circle" && "rounded-circle"} `}                
+                 >
                 <Upload className='position-absolute cursor-pointer top-0 end-0  rounded-circle p-1 text-white m-1 layout-cardimg' style={{ backgroundColor: "#9333EA" }} onClick={() => triggerImageInput()} />
-             <Trash onClick={(e) => {
+                <Trash onClick={(e) => {
                     e.stopPropagation()
                     // deleteDataById({ storeName: "Workflows", id: i.id })
                     // SetFetch(i => !i)
                 }} className='position-absolute top-0 bg-danger text-white rounded-2 p-1 m-1 z-3 layout-cardimg' style={{ right: "30px" }} />
-                <div className={`p-1 w-100 h-100 d-flex ${config?.shape == "rounded" && "rounded-2"}`}
+                <div className={`p-1 w-100 h-100 d-flex ${config?.shape == "rounded" && "rounded-2"} {""}
+                 ${config?.shape == "circle" && "rounded-circle"} `} 
                     style={{
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                         backgroundImage: `url(${state.img || Box})`
                     }}>
-                    {/* {!state.img && <p className='m-auto text-dark-emphasis -subtle'>change the default image</p>} */}
+                    {/* {!state.img && <p className='m-auto text-dark-emphasis -subtle rounded-circle'>change the default image</p>} */}
                 </div>
                 <input placeholder='Workflow Name'
                     // value={(isAdding || preview != null) ? Workflowtoshow?.products[ActiveCard || 0]?.name : ""}

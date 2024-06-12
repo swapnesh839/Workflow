@@ -185,7 +185,7 @@ const Itinerary = () => {
                       {obj.map((i) => (
                         <Col key={i.name} xxl="6" xl="6" md="6" xs="6" className='p-1'>
                           <div className='d-flex text-black -subtle h-100 p-2 flex-column' onClick={() => addproduct({ text: i.name })}>
-                            <Image src={i.img} className='mx-auto p-3 border' width={80} />
+                            <Image src={i.img} className='mx-auto cursor-pointer p-3 border' width={80} />
                             <p className='mx-auto text-center'>{i.name}</p>
                           </div>
                         </Col>
