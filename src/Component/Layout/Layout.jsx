@@ -30,7 +30,7 @@ const Layout = () => {
     const [isAdding, SetisAdding] = useState(false)
     const [NewWorkflow, SetNewWorkflow] = useState({
         "name": `Name of the Layout`,
-        "products": [{ name: "one", config: { width: "200", height: "100", x: 0, y: 30, shape: "box" }, steps: [{ name: "step-1", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] }]
+        "products": [{ name: "one", config: { width: "200", height: "100", x: 0, y: 30, shape: "box",img:null }, steps: [{ name: "step-1", Wp: false, CRM: false, Erp: false, SMS: false, Mail: false }] }]
     })
     const [Workflowtoshow, SetWorkflowtoshow] = useState(preview != null ? Workflows[preview] : isAdding && NewWorkflow)
 
@@ -41,12 +41,12 @@ const Layout = () => {
         }
     }, [preview])
 
-    // useEffect(() => {
-    //     SetNewWorkflow({
-    //         "name": `Workflow ${Workflows.length + 1}`,
-    //         "products": [{ name: "one", config: { width: "200", height: "100", x: 0, y: 30, shape: "box" }, steps: [{ name: "step-1", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] }]
-    //     })
-    // }, [Workflows])
+    useEffect(() => {
+        SetNewWorkflow({
+            "name": `Workflow ${Workflows.length + 1}`,
+            "products": [{ name: "one", config: { width: "200", height: "100", x: 0, y: 30, shape: "box" }, steps: [{ name: "step-1", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] }]
+        })
+    }, [Workflows])
 
 
     useEffect(() => {
@@ -129,19 +129,20 @@ const Layout = () => {
 
     const productConfig = ({ type } = {}) => {
         if (type == "rounded") {
-            return { width: 200, height: 200, x: 0, y: 0, shape: "rounded" };
+            return { width: 200, height: 200, x: 0, y: 0, shape: "rounded" ,img :null };
         }
         else if (type == "circle") { 
-            return { width: 200, height: 200, x: 0, y: 0, shape: "circle" };
+            return { width: 200, height: 200, x: 0, y: 0, shape: "circle" ,img :null };
         }
         else {
-            return { width: 200, height: 200, x: 0, y: 0, shape: "box" };
+            return { width: 200, height: 200, x: 0, y: 0, shape: "box" ,img :null };
         }
     };
 
     const AddNewProduct = ({ type }) => {
         SetisAdding(true)
-        const newProduct = { name: "Machine Name", config: productConfig({ type }), steps: [{ name: "step-1", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] };
+        
+        const newProduct = { name: "Machine Name", config: productConfig({ type }), steps: [{ name: "step-1", Wp: false, CRM: false, Erp: false, SMS: false, Mail: false }] };
 
         if (preview != null) {
             SetWorkflows(prev => {
@@ -153,16 +154,9 @@ const Layout = () => {
                 return updatedWorkflows;
             })
         } else {
-            // SetNewWorkflow(prev => {
-            //     console.log(prev);
-            //     return ({
-            //         ...prev,
-            //         products: [...prev.products, newProduct],
-            //     })
-            // });
             SetNewWorkflow(prev => {
                 // If this is the first time adding a product
-                const newProducts = prev.products.length === 1 && prev.products[0].name === "one" && prev.products[0].steps.length === 1 && prev.products[0].steps[0].name === "step-1"
+                const newProducts = prev.products.length === 1 
                     ? [newProduct]
                     : [...prev.products, newProduct];
 
@@ -227,6 +221,21 @@ const Layout = () => {
         updatestore({ storeName: "Workflows", updatedData: Workflows })
         console.log(Workflows);
     }
+    // const editFunction = ({ id, updatedState }) => {
+    //     if (preview !== null) {
+    //         SetWorkflows(prevWorkflows => {
+    //             const updatedWorkflows = [...prevWorkflows];
+    //             const workflow = updatedWorkflows[preview];
+    //             workflow.products = workflow.products.map((product, index) => {
+    //                 if (index === id) {
+    //                     return { ...product, config: updatedState };
+    //                 }
+    //                 return product;
+    //             });
+    //             return updatedWorkflows;
+    //         });
+    //     }
+    // };
     const editFunction = ({ id, updatedState }) => {
         if (preview !== null) {
             SetWorkflows(prevWorkflows => {
@@ -240,8 +249,23 @@ const Layout = () => {
                 });
                 return updatedWorkflows;
             });
+        } else {
+            SetNewWorkflow(prev => {
+                const updatedProducts = prev.products.map((product, index) => {
+                    if (index === id) {
+                        return { ...product, config: updatedState };
+                    }
+                    return product;
+                });
+    
+                return {
+                    ...prev,
+                    products: updatedProducts,
+                };
+            });
         }
     };
+    
     const handleProductnamechange = (e) => {
         const newName = e.target.value;
 
@@ -342,7 +366,8 @@ const Layout = () => {
                                         </div>
                                     </div>
                                 </div>
-                                {(ActiveCard != null) && <div>
+                                {ActiveCard != null && console.log(Workflowtoshow?.products[ActiveCard]?.config?.img )}
+                                {(ActiveCard != null && Workflowtoshow?.products[ActiveCard]?.config?.img != null) && <div>
                                     {
                                         <div className='text-black p-2 mb-2'>
                                             <span className='border-bottom border-2 p-1'>{"Product setup"}</span>
@@ -456,7 +481,7 @@ const Component = ({ position, id, text, editFunction, ActiveCard, setActiveCard
     });
 
     useEffect(() => {
-        // console.log(config?.img, state?.img);
+        console.log(config?.img);
         editFunction({ id: id, updatedState: state });
     }, [state])
     const handleFocus = (id) => {
@@ -533,7 +558,7 @@ const Component = ({ position, id, text, editFunction, ActiveCard, setActiveCard
                     style={{
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
-                        backgroundImage: `url(${state.img || Box})`
+                        backgroundImage: `url(${state.img})`
                     }}>
                     {/* {!state.img && <p className='m-auto text-dark-emphasis -subtle rounded-circle'>change the default image</p>} */}
                 </div>
