@@ -15,5 +15,15 @@
 }
 
 *{
-  border-color: #3637A0 !important;
+  border-color: #9333ea !important;
+}
+
+.bg-rpl{
+  background-color: #9333ea !important
+}
+.bg-rpl2{
+  background-color: #b473f1ea !important
+}
+.border-rpl{
+  border-color: #9333ea !important
 }

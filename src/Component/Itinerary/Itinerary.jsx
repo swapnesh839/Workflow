@@ -115,129 +115,114 @@ const Itinerary = () => {
   const editFunction = ({ id, updatedState }) => {
     if (preview !== null) {
       setItineraries(prev => {
-            const updatedItineraries = [...prev];
-            const Itinerary = updatedItineraries[preview];
-            Itinerary.products = Itinerary.products.map((product, index) => {
-                if (index === id) {
-                    return { ...product, config: updatedState };
-                }
-                return product;
-            });
-            return updatedItineraries;
+        const updatedItineraries = [...prev];
+        const Itinerary = updatedItineraries[preview];
+        Itinerary.products = Itinerary.products.map((product, index) => {
+          if (index === id) {
+            return { ...product, config: updatedState };
+          }
+          return product;
         });
+        return updatedItineraries;
+      });
     }
-};
+  };
 
   return (
-    <>
-      <Container>
-        <Container fluid className='Layout bg-white h-100 p-2' style={{ width: "1100px" }}>
-          <Container fluid className='p-0 d-flex justify-content-evenly h-100 w-100 align-items-center align-items-start'>
-            <div>
-              <div className='bg-dark text-white p-2 mb-2 rounded-3'>
-                {"Itinerary Setup"}
-              </div>
-              <div style={{ height: "500px", width: "600px" }} className='rounded-3 bg-dark d-inline-block'>
-                <div className='border w-100 h-100 border-dark border-3 rounded-3 w-100 boundingbox p-2'>
-                  <div className='h-100 w-100 position-relative text-white position-static'>
-                    {(isAdding && preview === null) && (
-                      <div className='bg-dark text-white p-2 mb-2 rounded-3 d-flex'>
-                        <span onClick={saveNewItineraryToDB} className='my-auto ms-auto bg-success rounded-1 py-1 px-2 cursor-pointer z-3'>Save New Itinerary</span>
-                      </div>
-                    )}
-                    {preview !== null && (
-                      <Button onClick={updateItinerary} className='position-absolute top-0 end-0 m-1 z-3'>Save Changes</Button>
-                    )}
-                    {/* {(isAdding || preview !== null) && (
-                      <>
-                        {itineraries?.map((i, index) => {
-                          console.log(index);
-                          return (
-                            i?.products?.map((o, ind) => {
-                              console.log(ind + 1);
-                              return (
-                                <Component
-                                  key={ind}
-                                  index={ind}
-                                  config={o.config}
-                                  // deleteItinerary={deleteItinerary}
-                                  // isLast={index === i.length-1}
-                                  isLast={i === itineraries[itineraries.length - 1]}
-                                  text={o.text}
-                                />
-                              )
-                            })
-                          )
-                        })}
-                      </>
-                    )} */}
-                    {
-                      (isAdding || preview != null) && Itinerarytoshow?.products.map((i, index) => {
-                        return <Component key={index} index={index}
-                          editFunction={editFunction}  
-                          id={index} text={i.text} config={i?.config} />
-                      })
-                    }
+    <Container className='overflow-auto'>
+      <Row>
+        <Col>
+          <Container>
+            <Container fluid className='Layout bg-white h-100 p-2'>
+              <Container fluid className='p-0 d-flex justify-content-evenly h-100 w-100 align-items-center align-items-start'>
+                <div>
+                  <div className='bg-dark text-white p-2 mb-2 rounded-3'>
+                    {"Itinerary Setup"}
+                  </div>
+                  <div style={{ height: "500px", width: "600px" }} className='rounded-3 bg-dark d-inline-block'>
+                    <div className='border w-100 h-100 border-dark border-3 rounded-3 w-100 boundingbox p-2'>
+                      <div className='h-100 w-100 position-relative text-white position-static'>
+                        {(isAdding && preview === null) && (
+                          <div className='bg-dark text-white p-2 mb-2 rounded-3 d-flex'>
+                            <span onClick={saveNewItineraryToDB} className='my-auto ms-auto bg-success rounded-1 py-1 px-2 cursor-pointer z-3'>Save New Itinerary</span>
+                          </div>
+                        )}
+                        {preview !== null && (
+                          <Button onClick={updateItinerary} className='position-absolute top-0 end-0 m-1 z-3'>Save Changes</Button>
+                        )}
+                        {
+                          (isAdding || preview != null) && Itinerarytoshow?.products.map((i, index) => {
+                            return <Component key={index} index={index}
+                              editFunction={editFunction}
+                              id={index} text={i.text} config={i?.config} />
+                          })
+                        }
 
-                    {(!isAdding && preview === null) && (
-                      <div className='h-100 w-100 d-flex align-items-center justify-content-center text-white'>
-                        <span>No Itinerary Selected</span>
+                        {(!isAdding && preview === null) && (
+                          <div className='h-100 w-100 d-flex align-items-center justify-content-center text-white'>
+                            <span>No Itinerary Selected</span>
+                          </div>
+                        )}
                       </div>
-                    )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </div>
-            <div>
-              <div className='bg-dark text-white p-2 mb-2 rounded-3'>
-                {"Components"}
-              </div>
-              <div style={{ height: "500px", width: "400px" }} className='rounded-3 bg-dark overflow-x-auto'>
-                <Row className='p-3'>
-                  {obj.map((i) => (
-                    <Col key={i.name} xxl="6" xl="6" md="6" xs="6" className='p-1'>
-                      <div className='d-flex text-black bg-dark-subtle h-100 p-2 flex-column' onClick={() => addproduct({ text: i.name })}>
-                        <Image src={i.img} className='mx-auto' width={80} />
-                        <p className='mx-auto text-center'>{i.name}</p>
+                <div>
+                  <div className='bg-dark text-white p-2 mb-2 rounded-3'>
+                    {"Components"}
+                  </div>
+                  <div style={{ height: "500px", width: "400px" }} className='rounded-3 bg-dark overflow-x-auto'>
+                    <Row className='p-3'>
+                      {obj.map((i) => (
+                        <Col key={i.name} xxl="6" xl="6" md="6" xs="6" className='p-1'>
+                          <div className='d-flex text-black bg-dark-subtle h-100 p-2 flex-column' onClick={() => addproduct({ text: i.name })}>
+                            <Image src={i.img} className='mx-auto' width={80} />
+                            <p className='mx-auto text-center'>{i.name}</p>
+                          </div>
+                        </Col>
+                      ))}
+                    </Row>
+                  </div>
+                </div>
+              </Container>
+            </Container>
+          </Container>
+        </Col>
+      </Row>
+      <Row>
+        <Col>
+          <Container className=''>
+            <Container fluid className='p-0 d-flex justify-content-evenly h-100 w-100 align-items-center align-items-start'>
+              <div className='rounded-3 bg-dark p-2 w-100 position-relative'>
+                <p className='border-bottom border-dark border-2 w-100 p-2 sticky-top z-3 text-white'>Itineraries</p>
+                {preview !== null && (
+                  <Button className='position-absolute top-0 m-1 z-3 end-0' onClick={clearItinerarySelected}>
+                    Clear selected Itinerary
+                  </Button>
+                )}
+                <Row className=' h-100 w-100 p-2'>
+                  {itineraries?.map((i, index) => (
+                    <Col key={index} lg="3" md="3" sm="3" xs="3" xxl="3" onClick={() => { setPreview(index) }} className="text-center p-2 cursor-pointer">
+                      <div className={`p-3 bg-dark-subtle position-relative text-dark ${preview === index && "border border-info border-2"}`}>
+                        <Trash onClick={(e) => {
+                          e.stopPropagation();
+                          deleteItinerary(i.id);
+                        }} className='position-absolute top-0 end-0 bg-danger text-white rounded-2 p-1 m-1' />
+                        Itinerary {index + 1}
                       </div>
                     </Col>
                   ))}
                 </Row>
               </div>
-            </div>
+            </Container>
           </Container>
-        </Container>
-      </Container>
-      <Container style={{ width: "1060px" }} className=''>
-        <Container fluid className='p-0 d-flex justify-content-evenly h-100 w-100 align-items-center align-items-start'>
-          <div className='rounded-3 bg-dark p-2 w-100 position-relative'>
-            <p className='border-bottom border-dark border-2 w-100 p-2 sticky-top z-3 text-white'>Itineraries</p>
-            {preview !== null && (
-              <Button className='position-absolute top-0 m-1 z-3 end-0' onClick={clearItinerarySelected}>
-                Clear selected Itinerary
-              </Button>
-            )}
-            <Row className=' h-100 w-100 p-2'>
-              {itineraries?.map((i, index) => (
-                <Col key={index} lg="3" md="3" sm="3" xs="3" xxl="3" onClick={() => { setPreview(index) }} className="text-center p-2 cursor-pointer">
-                  <div className={`p-3 bg-dark-subtle position-relative text-dark ${preview === index && "border border-info border-2"}`}>
-                    <Trash onClick={(e) => {
-                      e.stopPropagation();
-                      deleteItinerary(i.id);
-                    }} className='position-absolute top-0 end-0 bg-danger text-white rounded-2 p-1 m-1' />
-                    Itinerary {index + 1}
-                  </div>
-                </Col>
-              ))}
-            </Row>
-          </div>
-        </Container>
-      </Container>
-    </>
+        </Col>
+      </Row>
+    </Container>
   );
 }
 
-const Component = ({ index, config, deleteItinerary,editFunction, isLast }) => {
+const Component = ({ index, config, deleteItinerary, editFunction, isLast }) => {
   const [state, setState] = useState({
     width: config?.width || 400,
     height: config?.height || 70,
@@ -248,7 +233,7 @@ const Component = ({ index, config, deleteItinerary,editFunction, isLast }) => {
 
   useEffect(() => {
     editFunction({ id: index, updatedState: state });
-}, [state])
+  }, [state])
 
 
   return (

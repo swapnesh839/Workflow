@@ -55,9 +55,11 @@ const Layout = () => {
 
 
     const AddWorkflowstodb = async () => {
+        console.log(NewWorkflow);
+        
         await addData({ storeName: "Workflows", newData: NewWorkflow })
         SetFetch(i => !i)
-        SetisAdding(false)
+        // SetisAdding(false)
     }
     const handleSetupscheckboxChange = (stepIndex, checkboxValue) => {
         if (ActiveCard !== null) {
@@ -306,11 +308,6 @@ const Layout = () => {
                                         <div className='border w-100 h-100  border-3 rounded-3 w-100 boundingbox p-2'>
                                             <div className='h-100 w-100 position-relative' >
 
-                                                {ActiveCard != null && <Trash onClick={(e) => {
-                                                    e.stopPropagation()
-                                                    // deleteDataById({ storeName: "Workflows", id: i.id })
-                                                    // SetFetch(i => !i)
-                                                }} className='position-absolute top-0 bg-danger text-white rounded-2 p-1 m-2 z-3' style={{ right: "80px" }} />}
                                                 {preview !== null && <span
                                                     onClick={Updateproduct}
                                                     className='position-absolute end-0 bottom-0 z-3 bg-success rounded-1 py-1 px-2 cursor-pointer'
@@ -390,9 +387,9 @@ const Layout = () => {
             <Row>
                 <Col>
                     <Container className='position-relative'>
-                        <Container fluid className='p-0 d-flex justify-align-content-around h-100 w-100 align-items-center '>
+                        <Container fluid className='p-0 d-flex justify-align-content-around h-100 w-100 align-items-center border-3 rounded-1 border border-rpl'>
                             <div className='rounded-3  p-2 w-100 position-relative'>
-                                <p className='border-bottom  border-2 w-100 p-2 sticky-top z-3'>layouts</p>
+                                <p className='border-bottom  border-2 w-100 p-2 sticky-top z-3 text-black'>layouts</p>
                                 {
                                     preview != null && (
                                         <Button
@@ -409,13 +406,7 @@ const Layout = () => {
                                     {
                                         Workflows.map((i, index) => (
                                             <Col key={index} lg="3" md="3" sm="3" xs="3" xxl="3" onClick={() => { setPreview(index) }} className="text-center p-2 cursor-pointer">
-                                                <div className={`p-3 -subtle position-relative text-dark ${preview == index && "border border-info border-2"}`}>
-                                                    <Trash onClick={(e) => {
-                                                        e.stopPropagation()
-                                                        deleteDataById({ storeName: "Workflows", id: i.id })
-                                                        SetFetch(i => !i)
-                                                    }} className='position-absolute top-0 end-0 bg-danger text-white rounded-2 p-1 m-1' />
-
+                                                <div className={`p-3 -subtle position-relative text-white rounded-2 bg-rpl2 ${preview == index && "border border-info border-2"}`}>
                                                     <Trash onClick={(e) => {
                                                         e.stopPropagation()
                                                         deleteDataById({ storeName: "Workflows", id: i.id })
@@ -509,7 +500,12 @@ const Component = ({ position, id, text, editFunction, ActiveCard, setActiveCard
             className={`${config?.shape == "rounded" && "rounded-2"} text-dark text-center d-flex p-2 ${ActiveCard == id && "border border-2 border-info"}`}
         >
             <div className={`w-100 position-relative Layoutcard d-flex flex-column ${config?.shape == "rounded" && "rounded-2"}`}>
-                <Upload className='position-absolute top-0 end-0  rounded-circle p-1 text-white m-1 layout-cardimg d-none' style={{ backgroundColor: "#9333EA" }} onClick={() => triggerImageInput()} />
+                <Upload className='position-absolute top-0 end-0  rounded-circle p-1 text-white m-1 layout-cardimg' style={{ backgroundColor: "#9333EA" }} onClick={() => triggerImageInput()} />
+             <Trash onClick={(e) => {
+                    e.stopPropagation()
+                    // deleteDataById({ storeName: "Workflows", id: i.id })
+                    // SetFetch(i => !i)
+                }} className='position-absolute top-0 bg-danger text-white rounded-2 p-1 m-1 z-3 layout-cardimg' style={{ right: "30px" }} />
                 <div className={`p-1 w-100 h-100 d-flex ${config?.shape == "rounded" && "rounded-2"}`}
                     style={{
                         backgroundSize: 'cover',
