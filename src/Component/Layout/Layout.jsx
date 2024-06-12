@@ -405,7 +405,7 @@ const Layout = () => {
                     <Container className='position-relative'>
                         <Container fluid className='p-0 d-flex justify-align-content-around h-100 w-100 align-items-center border-3 rounded-1 border border-rpl'>
                             <div className='rounded-3  p-2 w-100 position-relative'>
-                                <p className='border-bottom  border-2 w-100 p-2 sticky-top z-3 text-black'>layouts</p>
+                                <p className='border-bottom border-rpl border-2 w-100 p-2 sticky-top z-3 text-black'>layouts</p>
                                 {
                                     preview != null && (
                                         <Button
