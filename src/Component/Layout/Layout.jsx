@@ -500,7 +500,7 @@ const Component = ({ position, id, text, editFunction, ActiveCard, setActiveCard
             className={`${config?.shape == "rounded" && "rounded-2"} text-dark text-center d-flex p-2 ${ActiveCard == id && "border border-2 border-info"}`}
         >
             <div className={`w-100 position-relative Layoutcard d-flex flex-column ${config?.shape == "rounded" && "rounded-2"}`}>
-                <Upload className='position-absolute top-0 end-0  rounded-circle p-1 text-white m-1 layout-cardimg' style={{ backgroundColor: "#9333EA" }} onClick={() => triggerImageInput()} />
+                <Upload className='position-absolute cursor-pointer top-0 end-0  rounded-circle p-1 text-white m-1 layout-cardimg' style={{ backgroundColor: "#9333EA" }} onClick={() => triggerImageInput()} />
              <Trash onClick={(e) => {
                     e.stopPropagation()
                     // deleteDataById({ storeName: "Workflows", id: i.id })
