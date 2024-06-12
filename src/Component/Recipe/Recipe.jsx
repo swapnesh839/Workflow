@@ -19,9 +19,15 @@ const Recipe = () => {
   const [isAdding, SetisAdding] = useState(false);
   const [preview, setPreview] = useState(null);
   const [NewRecipe, SetNewRecipe] = useState({
-    name: `Recipe 1`,
-    config: { width: "400", height: "70", x: 0, y: 60, text: "" }
+    name: `Recipes ${Recipes.length + 1}`,
+    products: [{ name: "one", config: { width: 400, height: 70, x: 0, y: 0 } }]
   });
+
+  const [Recipestoshow, SetRecipestoshow] = useState(preview != null ? Recipes[preview] : isAdding && NewRecipe)
+  useEffect(() => {
+    SetRecipestoshow(preview != null ? Recipes[preview] : NewRecipe && NewRecipe)
+  }, [Recipes, preview, NewRecipe])
+
 
   useEffect(() => {
     getRecipes();
@@ -117,6 +123,7 @@ const Recipe = () => {
     setPreview(null);
     SetisAdding(false);
   };
+  
 
   return (
     <Container className='overflow-auto'>
@@ -130,11 +137,11 @@ const Recipe = () => {
                     {"Recipe Setup"}
                   </div>
                   {
-                    preview!= null || !isAdding && <div className='position-absolute translate-middle top-50' style={{left:"-50px"}}>
-                    <span onClick={()=>{
-                      SetisAdding(true)
-                    }} className='bg-success cursor-pointer p-1 rounded-2'>Create New</span>
-                  </div>
+                    preview != null || !isAdding && <div className='position-absolute translate-middle top-50' style={{ left: "-50px" }}>
+                      <span onClick={() => {
+                        SetisAdding(true)
+                      }} className='bg-success cursor-pointer p-1 rounded-2'>Create New</span>
+                    </div>
                   }
                   <div style={{ height: "500px", width: "600px" }} className='rounded-3  d-inline-block'>
                     <div className='border w-100 h-100 border-3 rounded-3 w-100 boundingbox p-2'>
@@ -145,55 +152,49 @@ const Recipe = () => {
                             <span onClick={saveNewRecipeToDB} className='my-auto ms-auto bg-success rounded-1 py-1 px-2 cursor-pointer z-3'>Save New Recipe</span>
                           </div>
                         )}
-                        {(isAdding || preview !== null) && (Recipes?.map((i, index) => (
-                          <Component
-                            key={index}
-                            index={index}
-                            config={i.config}
-                            setActiveRecipe={setActiveRecipe}
-                            deleteRecipe={deleteRecipe}
-                            isLast={index === Recipes.length - 1}
-                            text={i.name}
-                            ActiveRecipe={ActiveRecipe}
-                          />
-                        )))}
-                        {/* {(!isAdding && preview === null) && (
-                          <div className='h-100 w-100 d-flex align-items-center justify-content-center text-white'>
-                            <span>No Recipe Selected</span>
-                          </div>
-                        )} */}
+                        {
+                          console.log(Array.isArray(Recipestoshow),NewRecipe)
+                        }
+                        {/* {
+                          (isAdding || preview != null) && Recipestoshow?.products.map((i, index) => {
+                            return <Component key={index} index={index}
+                              // editFunction={editFunction}
+                              id={index} text={i.text} config={i?.config} />
+                          })
+                        } */}
                       </div>
                     </div>
                   </div>
                 </div>
-                <div>
-                  <div className=' text-white p-2 mb-2 rounded-3'>
-                    {"Alerts "}
-                  </div>
-                  {
-                    (isAdding 
-                    || preview!= null
-                    ) && <div style={{ height: "500px", width: "400px" }} className='rounded-3 border border-3 d-inline-block p-0'>
-                    <div className='p-2'>
-                      <Select
-                        onChange={handleSelectChange}
-                        className='text-black'
-                        options={options}
-                        value={Selectedoption}
-                      />
-                      <Row className='mt-3'>
-                        {Selectedoption?.Alerts?.map((alert, index) => (
-                          <Col className='' key={index} xxl="6" xl="6" md="6" sm="6">
-                            <div onClick={() => { AddRecipes(alert) }} className='bg-light text-black p-2 mb-2 rounded cursor-pointer'>
-                              {alert}
-                            </div>
-                          </Col>
-                        ))}
-                      </Row>
+
+                {
+                  (isAdding
+                    || preview != null
+                  ) && <div>
+                    <div className=' text-black p-2 mb-2 rounded-3'>
+                      {"Alerts "}
+                    </div>
+                    <div style={{ height: "500px", width: "400px" }} className='rounded-3 border border-3 d-inline-block p-0'>
+                      <div className='p-2'>
+                        <Select
+                          onChange={handleSelectChange}
+                          className='text-black'
+                          options={options}
+                          value={Selectedoption}
+                        />
+                        <Row className='mt-3'>
+                          {Selectedoption?.Alerts?.map((alert, index) => (
+                            <Col className='' key={index} xxl="6" xl="6" md="6" sm="6">
+                              <div onClick={() => { AddRecipes(alert) }} className='bg-light border text-black p-2 mb-2 rounded cursor-pointer'>
+                                {alert}
+                              </div>
+                            </Col>
+                          ))}
+                        </Row>
+                      </div>
                     </div>
                   </div>
-                  }
-                </div>
+                }
               </Container>
             </Container>
           </Container>
@@ -203,8 +204,8 @@ const Recipe = () => {
         <Col>
           <Container className=''>
             <Container fluid className='p-0 d-flex justify-content-evenly h-100 w-100 align-items-center align-items-start'>
-              <div className='rounded-3  p-2 w-100 position-relative'>
-                <p className='border-bottom border-dark border-2 w-100 p-2 sticky-top z-3 text-white'>Recipes</p>
+              <div className='rounded-3  p-2 w-100 position-relative border border-2 border-rpl'>
+                <p className='border-bottom border-rpl border-2 w-100 p-2 sticky-top z-3 text-black'>Recipes</p>
                 {preview !== null && (
                   <Button className='position-absolute top-0 end-0 m-1 z-3' onClick={clearRecipeSelected}>
                     Clear selected Recipe
