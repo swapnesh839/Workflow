@@ -177,7 +177,7 @@ const Itinerary = () => {
                 {(isAdding
                     || preview != null
                   ) && <div>
-                  <div className=' text-black p-2 mb-2 border-bottom border-2 rounded-3'>
+                  <div className=' text-black p-2 mb-2 rounded-3'>
                     <span className=' border-bottom border-2 p-1'>{"Components"}</span>
                   </div>
                   <div style={{ height: "500px", width: "400px" }} className='rounded-3 border border-2'>
