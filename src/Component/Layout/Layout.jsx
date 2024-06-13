@@ -35,7 +35,9 @@ const Layout = () => {
         "products": [{ name: "one", config: { width: "200", height: "200", x: 0, y: 0, shape: "box", img: null }, steps: [{ name: "step-1", Wp: false, CRM: false, Erp: false, SMS: false, Mail: false }] }]
     })
     const [Workflowtoshow, SetWorkflowtoshow] = useState(preview != null ? Workflows[preview] : isAdding && NewWorkflow)
-
+    useEffect(()=>{
+        console.log(NewWorkflow.products);
+    },[NewWorkflow])
     const playactiveplay = () => {
         setIsLoading(true);
         const interval = setInterval(() => {
@@ -103,61 +105,73 @@ const Layout = () => {
         SetFetch(i => !i)
         // SetisAdding(false)
     }
-    const handleSetupscheckboxChange = (stepIndex, checkboxValue) => {
+    const handleSetupCheckboxChange = (stepIndex, checkboxValue) => {
         if (ActiveCard !== null) {
-
             if (preview !== null) {
                 SetWorkflows(prev => {
                     if (!prev || prev.length <= preview) return prev; // Prevent errors if workflows are not yet loaded
                     if (!prev[preview]?.products[ActiveCard]) return prev; // Prevent errors if product does not exist
-
+    
                     const updatedWorkflows = [...prev];
                     const currentWorkflow = { ...updatedWorkflows[preview] };
                     const currentProduct = { ...currentWorkflow.products[ActiveCard] };
                     const updatedSteps = [...currentProduct.steps];
-
+    
                     updatedSteps[stepIndex] = {
                         ...updatedSteps[stepIndex],
-                        [checkboxValue]: !updatedSteps[stepIndex][checkboxValue],
+                        ...Object.keys(updatedSteps[stepIndex]).reduce((acc, key) => {
+                            if (key !== 'name') {
+                                acc[key] = false;
+                            }
+                            return acc;
+                        }, {}),
+                        [checkboxValue]: true,
                     };
-
+    
                     currentProduct.steps = updatedSteps;
                     currentWorkflow.products[ActiveCard] = currentProduct;
                     updatedWorkflows[preview] = currentWorkflow;
-
+    
                     console.log("Updated Workflows:", updatedWorkflows);
                     return updatedWorkflows;
                 });
             } else {
                 SetNewWorkflow(prev => {
                     if (!prev || !prev.products || !prev.products[ActiveCard]) return prev; // Prevent errors if new workflow or products are not yet loaded
-
+    
                     const updatedProducts = [...prev.products];
                     const currentProduct = { ...updatedProducts[ActiveCard] };
                     const updatedSteps = [...currentProduct.steps];
-
+    
                     updatedSteps[stepIndex] = {
                         ...updatedSteps[stepIndex],
-                        [checkboxValue]: !updatedSteps[stepIndex][checkboxValue],
+                        ...Object.keys(updatedSteps[stepIndex]).reduce((acc, key) => {
+                            if (key !== 'name') {
+                                acc[key] = false;
+                            }
+                            return acc;
+                        }, {}),
+                        [checkboxValue]: true,
                     };
-
+    
                     currentProduct.steps = updatedSteps;
                     updatedProducts[ActiveCard] = currentProduct;
-
+    
                     const newState = {
                         ...prev,
                         products: updatedProducts,
                     };
-
+    
                     console.log("Updated NewWorkflow:", newState);
                     return newState;
                 });
             }
-        }
-        else {
+        } else {
             window.alert("Select an ActiveCard");
         }
     };
+    
+    
 
 
     const getWorkflows = async () => {
@@ -202,10 +216,10 @@ const Layout = () => {
                     prev.products[0].config.height === "200" &&
                     prev.products[0].steps.length === 1 &&
                     prev.products[0].steps[0].name === "step-1" &&
-                    prev.products[0].steps[0].Wp === true &&
-                    prev.products[0].steps[0].CRM === true &&
+                    prev.products[0].steps[0].Wp === false &&
+                    prev.products[0].steps[0].CRM === false &&
                     prev.products[0].steps[0].Erp === false &&
-                    prev.products[0].steps[0].SMS === true &&
+                    prev.products[0].steps[0].SMS === false &&
                     prev.products[0].steps[0].Mail === false;
 
                 const newProducts = isFirstAddition
@@ -220,17 +234,6 @@ const Layout = () => {
         }
     };
 
-
-
-
-    const fobj = {
-        "name": "Workflow 2",
-        "products": [
-            { name: "one", config: { width: "200", height: "100", x: 0, y: 30, shape: "box" }, steps: [{ name: "step-1", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] },
-            { name: "two", config: { width: "100", height: "200", x: 220, y: 130, shape: "box" }, steps: [{ name: "ghgjk", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] },
-            { name: "three", config: { width: "300", height: "20", x: 200, y: 350, shape: "rounded" }, steps: [{ name: "rtyu", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] },
-        ]
-    }
     const Addsteps = () => {
         const newStep = { name: `step ${Workflowtoshow.products[ActiveCard || 0]?.steps.length + 1}`, Wp: false, CRM: false, Erp: false, SMS: false, Mail: false };
 
@@ -519,7 +522,7 @@ const Layout = () => {
                                                                                     stepinput.map((o, index) => (
                                                                                         <Col key={index} className='-subtle d-flex flex-column rounded-2 text-center mx-1 p-2 justify-content-center align-content-center'>
                                                                                             <input value={o.value}
-                                                                                                onChange={() => handleSetupscheckboxChange(v, o.value)}
+                                                                                                onChange={() => handleSetupCheckboxChange(v, o.value)}
                                                                                                 checked={i?.[o.value] === true || false}
                                                                                                 className="mx-auto" type='checkbox' name={o.value} id={o.value} />
                                                                                             <div className=''>
@@ -644,9 +647,11 @@ const Layout = () => {
                                                                                     stepinput.map((o, index) => (
                                                                                         <Col key={index} className='-subtle d-flex flex-column rounded-2 text-center mx-1 p-2 justify-content-center align-content-center'>
                                                                                             <input value={o.value}
-                                                                                                onChange={() => handleSetupscheckboxChange(v, o.value)}
+                                                                                                onChange={() => handleSetupCheckboxChange(v, o.value)}
                                                                                                 checked={i?.[o.value] === true || false}
-                                                                                                className="mx-auto" type='checkbox' name={o.value} id={o.value} />
+                                                                                                className="mx-auto" type='radio'
+                                                                                                name={`step-${v}`}
+                                                                                                id={`step-${v}-${o.value}`} />
                                                                                             <div className=''>
                                                                                                 <label className='d-inline' htmlFor={o.value}>
                                                                                                     <Image src={o.img} width={30} className='p-1' />
