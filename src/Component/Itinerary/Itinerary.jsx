@@ -20,7 +20,6 @@ const obj = [
 const Itinerary = () => {
   const [itineraries, setItineraries] = useState([]);
   const [fetch, setFetch] = useState(true);
-  const [selectedOption, setSelectedOption] = useState(null);
   const [isAdding, setIsAdding] = useState(false);
   const [preview, setPreview] = useState(null);
   const [newItinerary, setNewItinerary] = useState({
@@ -37,10 +36,6 @@ const Itinerary = () => {
   useEffect(() => {
     SetItinerarytoshow(preview != null ? itineraries[preview] : newItinerary && newItinerary)
   }, [itineraries, preview, newItinerary])
-
-  useEffect(() => {
-    // console.log(newItinerary);
-  }, [newItinerary])
 
   useEffect(() => {
     getItineraries();
@@ -71,7 +66,6 @@ const Itinerary = () => {
       })
     } else {
       setNewItinerary(prev => {
-        console.log(newItinerary);
         return ({
           ...prev,
           products: [...prev.products, newProduct],
@@ -129,20 +123,20 @@ const Itinerary = () => {
   };
   const deleteLastProduct = () => {
     if (preview !== null) {
-        setItineraries((prev) => {
-            const updatedWorkflows = [...prev];
-            if (updatedWorkflows[preview].products.length > 0) {
-                updatedWorkflows[preview].products.pop();
-            }
-            return updatedWorkflows;
-        });
+      setItineraries((prev) => {
+        const updatedWorkflows = [...prev];
+        if (updatedWorkflows[preview].products.length > 0) {
+          updatedWorkflows[preview].products.pop();
+        }
+        return updatedWorkflows;
+      });
     } else {
-        setNewItinerary((prev) => ({
-            ...prev,
-            products: prev.products.slice(0, -1),
-        }));
+      setNewItinerary((prev) => ({
+        ...prev,
+        products: prev.products.slice(0, -1),
+      }));
     }
-};
+  };
 
 
   return (
@@ -177,7 +171,7 @@ const Itinerary = () => {
                         {
                           (isAdding || preview != null) && Itinerarytoshow?.products.map((i, index) => {
                             return <Component key={index} index={index}
-                            deleteLastProduct={deleteLastProduct}
+                              deleteLastProduct={deleteLastProduct}
                               isLast={index == Itinerarytoshow?.products.length - 1}
                               editFunction={editFunction}
                               id={index} text={i.text} config={i?.config} />
@@ -244,7 +238,7 @@ const Itinerary = () => {
   );
 }
 
-const Component = ({ index,deleteLastProduct, config, editFunction, isLast }) => {
+const Component = ({ index, deleteLastProduct, config, editFunction, isLast }) => {
   const [state, setState] = useState({
     width: config?.width || 400,
     height: config?.height || 70,
@@ -286,9 +280,7 @@ const Component = ({ index,deleteLastProduct, config, editFunction, isLast }) =>
         <span className='m-auto p-1 text-dark'>{state.text}</span>
         <p className='text-black w-100 text-start position-absolute start-0 top-0 p-1'>step {index + 1}</p>
         {isLast && (
-          <Trash onClick={() =>
-            deleteLastProduct()
-          } className='position-absolute top-0 end-0 bg-danger rounded-4 p-1 m-1 text-white cursor-pointer' />
+          <Trash onClick={deleteLastProduct} className='position-absolute top-0 end-0 bg-danger rounded-4 p-1 m-1 text-white cursor-pointer' />
         )}
       </div>
     </Rnd>

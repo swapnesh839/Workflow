@@ -20,18 +20,22 @@ const Recipe = () => {
   const [preview, setPreview] = useState(null);
   const [NewRecipe, SetNewRecipe] = useState({
     name: `Recipes ${Recipes.length + 1}`,
-    products: [{ name: "one", config: { width: 400, height: 70, x: 0, y: 0,text:"alert" } }]
+    products: [{ name: "one", config: { width: 400, height: 70, x: 0, y: 0, text: "alert" } }]
   });
 
   const [Recipestoshow, SetRecipestoshow] = useState(preview != null ? Recipes[preview] : isAdding && NewRecipe)
   useEffect(() => {
     SetRecipestoshow(preview != null ? Recipes[preview] : NewRecipe && NewRecipe)
   }, [Recipes, preview, NewRecipe])
+  useEffect(() => {
+    SetNewRecipe({
+      name: `Recipes ${Recipes.length + 1}`,
+      products: [{ name: "one", config: { width: 400, height: 70, x: 0, y: 0, text: "alert" } }]
+    })
+  }, [Recipes])
 
   useEffect(() => {
     SetRecipestoshow(preview != null ? Recipes[preview] : NewRecipe && NewRecipe)
-    console.log(Array.isArray(Recipestoshow?.products))
-    console.log(Array.isArray(NewRecipe.products),NewRecipe.products);
   }, [Recipes, preview, NewRecipe])
 
 
@@ -43,20 +47,12 @@ const Recipe = () => {
     try {
       const data = await getAllData({ storeName: "Recipes" });
       SetRecipes(data || []);
-      // SetNewRecipe({
-      //   name: `Recipe ${data?.length + 1 || 1}`,
-      //   config: { width: "400", height: "70", x: 0, y: 60, text: "" }
-      // });
     } catch (error) {
       console.error('Error fetching recipes:', error);
     }
   };
 
   const AddRecipes = async (alert) => {
-    // const newRecipe = {
-    //   name: `Recipes ${Recipes.length + 1}`,
-    //   products: [{ name: "one", config: { width: 400, height: 70, x: 0, y: 0 } }]
-    // };
     const newRecipe = {
       config: { width: 400, height: 70, x: 0, y: 60, text: alert }
     };
@@ -114,12 +110,8 @@ const Recipe = () => {
   };
 
   const updateRecipe = async () => {
-    try {
-      await updatestore({ storeName: "Recipes", updatedData: Recipes });
-      console.log('Recipes updated:', Recipes);
-    } catch (error) {
-      console.error('Error updating recipes:', error);
-    }
+    updatestore({ storeName: "Recipes", updatedData: Recipes });
+    console.log('Recipes updated:', Recipes);
   };
 
   const handleSelectChange = (selectedOption) => {
@@ -171,20 +163,20 @@ const Recipe = () => {
   const deleteLastProduct = () => {
     if (preview !== null) {
       SetRecipes((prev) => {
-            const updatedWorkflows = [...prev];
-            if (updatedWorkflows[preview].products.length > 0) {
-                updatedWorkflows[preview].products.pop();
-            }
-            return updatedWorkflows;
-        });
+        const updatedWorkflows = [...prev];
+        if (updatedWorkflows[preview].products.length > 0) {
+          updatedWorkflows[preview].products.pop();
+        }
+        return updatedWorkflows;
+      });
     } else {
-        SetNewRecipe((prev) => ({
-            ...prev,
-            products: prev.products.slice(0, -1),
-        }));
+      SetNewRecipe((prev) => ({
+        ...prev,
+        products: prev.products.slice(0, -1),
+      }));
     }
-};
-  
+  };
+
 
   return (
     <Container className='overflow-auto'>
@@ -196,7 +188,7 @@ const Recipe = () => {
                 <div className=' position-relative'>
                   <div className='text-black p-2 mb-2 rounded-3'>
                     <span className=' border-bottom border-2 p-1'>
-                    {"Recipe Setup"}
+                      {"Recipe Setup"}
 
                     </span>
                   </div>
@@ -216,15 +208,15 @@ const Recipe = () => {
                           </div>
                         )}
                         {preview !== null && (
-                          <Button onClick={updateItinerary} className='position-absolute bottom-0 end-0 m-1 z-3'>update</Button>
+                          <Button onClick={updateRecipe} className='position-absolute bottom-0 end-0 m-1 z-3'>update</Button>
                         )}
-                        
+
                         {
                           (isAdding || preview != null) && Recipestoshow?.products.map((i, index) => {
                             return <Component key={index} index={index}
-                            deleteLastProduct={deleteLastProduct}
+                              deleteLastProduct={deleteLastProduct}
                               editFunction={editFunction}
-                              id={index} text={i.text} config={i?.config} isLast={index == Recipestoshow?.products.length -1} />
+                              id={index} text={i.text} config={i?.config} isLast={index == Recipestoshow?.products.length - 1} />
                           })
                         }
                       </div>
@@ -239,8 +231,8 @@ const Recipe = () => {
                     <div className='text-black p-2 mb-2 rounded-3'>
                       <span className='border-bottom border-2 p-1'>
                         {"Alerts "}
-                        
-                        </span>
+
+                      </span>
                     </div>
                     <div style={{ height: "500px", width: "400px" }} className='rounded-3 border border-3 d-inline-block p-0'>
                       <div className='p-2'>
@@ -282,7 +274,7 @@ const Recipe = () => {
                 <Row className=' h-100 w-100 p-2'>
                   {Recipes?.map((i, index) => (
                     <Col key={index} lg="3" md="3" sm="3" xs="3" xxl="3" onClick={() => { setPreview(index) }} className="text-center p-2 cursor-pointer">
-                      <div style={{backgroundColor:"#BA7FF2"}} className={`p-3 text-white rounded-2 position-relative text-dark ${preview === index && "border border-info border-2"}`}>
+                      <div style={{ backgroundColor: "#BA7FF2" }} className={`p-3 text-white rounded-2 position-relative text-dark ${preview === index && "border border-info border-2"}`}>
                         <Trash onClick={(e) => {
                           e.stopPropagation();
                           deleteRecipe(i.id);
@@ -336,7 +328,7 @@ const Component = ({ index, config, deleteLastProduct, editFunction, isLast }) =
       minWidth={100}
       minHeight={50}
       bounds="parent"
-      style={{background:"#BACFE3"}}
+      style={{ background: "#BACFE3" }}
       className='text-dark text-center -subtle d-flex rounded-2'
     >
       <div className=' h-100 d-flex p-2 rounded-2 text-dark w-100 m-auto position-relative'>
