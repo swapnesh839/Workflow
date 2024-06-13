@@ -22,9 +22,7 @@ const stepinput = [
 ]
 
 const Layout = () => {
-    const [step, Setstep] = useState(["step 1"])
     const [ActiveCard, setActiveCard] = useState(null)
-    const [IneditMode, setIneditMode] = useState(false)
     const [preview, setPreview] = useState(null);
     const [Workflows, SetWorkflows] = useState([])
     const [Fetch, SetFetch] = useState(true)
@@ -39,25 +37,29 @@ const Layout = () => {
     const [Workflowtoshow, SetWorkflowtoshow] = useState(preview != null ? Workflows[preview] : isAdding && NewWorkflow)
 
     const playactiveplay = () => {
-        setIsLoading(true); // Start loading
-        setActiveplay(0); // Start with activeplay at 0
-
+        setIsLoading(true);
         const interval = setInterval(() => {
-            if (activeplay >= stepinput.length - 1) {
-                setIsLoading(false);
-                clearInterval(interval);
-                setActiveplay(-1);
-            } else {
-                setActiveplay(prevActiveplay => prevActiveplay + 1);
-                console.log(activeplay);
-                if (activeplay >= stepinput.length - 1) {
+            setActiveplay((prevActiveplay) => {
+                if (prevActiveplay < stepinput.length - 1) {
+                    return prevActiveplay + 1;
+                } else {
                     clearInterval(interval);
+                    setIsLoading(false);
+                    setActiveplay(-1)
+                    return prevActiveplay;
                 }
-            }
-        }, 2000);
+            });
+            console.log(activeplay);
+        }, 3000);
     };
 
-    
+    useEffect(() => {
+        return () => {
+            setIsLoading(false); // Clean up function to set isLoading to false when component unmounts
+        };
+    }, []);
+
+
 
     useEffect(() => {
         if (preview != null) {
@@ -177,38 +179,6 @@ const Layout = () => {
             return { width: 200, height: 200, x: 0, y: 0, shape: "box", img: null };
         }
     };
-
-    // const AddNewProduct = ({ type }) => {
-    //     SetisAdding(true)
-
-    //     const newProduct = { name: "Machine Name", config: productConfig({ type }), steps: [{ name: "step-1", Wp: false, CRM: false, Erp: false, SMS: false, Mail: false }] };
-
-    //     if (preview != null) {
-    //         SetWorkflows(prev => {
-    //             const updatedWorkflows = [...prev];
-    //             updatedWorkflows[preview] = {
-    //                 ...updatedWorkflows[preview],
-    //                 products: [...updatedWorkflows[preview].products, newProduct]
-    //             };
-    //             return updatedWorkflows;
-    //         })
-    //     } else {
-    //         SetNewWorkflow(prev => {
-    //             // If this is the first time adding a product
-    //             const newProducts = prev.products.length === 1 
-    //                 ? [newProduct]
-    //                 : [...prev.products, newProduct];
-
-    //             return {
-    //                 ...prev,
-    //                 products: newProducts,
-    //             };
-    //         });
-
-    //     }
-    // }
-
-
 
     const AddNewProduct = ({ type }) => {
         SetisAdding(true);
@@ -513,7 +483,7 @@ const Layout = () => {
                                                             {"Define WorkFlow"}
                                                         </span>
                                                         {
-                                                            isEditing ? <Eye onClick={()=>{SetisEditing(false)}}/> : <Edit onClick={()=>{SetisEditing(true)}}/>
+                                                            isEditing ? <Eye onClick={() => { SetisEditing(false) }} /> : <Edit onClick={() => { SetisEditing(true) }} />
                                                         }
                                                     </div>
                                                 }
@@ -586,50 +556,53 @@ const Layout = () => {
                                                     </div>
                                                 </div>
                                             </div> : <div>
-                                            {
+                                                {
                                                     <div className='text-black p-2 mb-2 d-flex '>
                                                         <span className='border-bottom border-2 p-1 me-auto'>
                                                             {/* {"Product setup"} */}
                                                             {"Define WorkFlow"}
                                                         </span>
                                                         {
-                                                            isEditing ? <Eye onClick={()=>{SetisEditing(false)}}/> : <Edit onClick={()=>{SetisEditing(true)}}/>
+                                                            isEditing ? <Eye onClick={() => { SetisEditing(false) }} /> : <Edit onClick={() => { SetisEditing(true) }} />
                                                         }
                                                     </div>
                                                 }
-                                            <div style={{ height: "500px", width: "400px" }} className='rounded-3 mt-auto d-inline-block text-black'>
-                                                <div className='border d-flex flex-column border-3 h-100 w-100 rounded-3 w-100 position-relative overflow-auto hidescrollbar'> the play page
-                                                    <Container>
-                                                        <Row className='p-2 w-100'>
-                                                            {stepinput.map((i, index) => (
-                                                                <Col key={index} md="2" xxl="2" sm="2">
-                                                                    
-                                                                    <img
-                                                                        width="100%"
-                                                                        className={`${activeplay === index && 'border'}`}
-                                                                        src={i.img}
-                                                                        alt={`Step ${index}`}
-                                                                    />
-                                                                </Col>
-                                                            ))}
-                                                        </Row>
-                                                    </Container>
-                                                    <Container>
-                                                        {isLoading &&
-                                                            <RingLoader
-                                                                loading={isLoading}
-                                                                size={150}
-                                                                className='bg-dark-subtle'
-                                                                aria-label="Loading Spinner"
-                                                                data-testid="loader"
-                                                            />
-                                                        }
-                                                    </Container>
-                                                    <Container className='mt-auto p-3'>
-                                                        <Button className='border-0' onClick={playactiveplay}>run</Button>
-                                                    </Container>
-                                                </div>
-                                            </div></div>
+                                                <div style={{ height: "500px", width: "400px" }} className='rounded-3 mt-auto d-inline-block text-black'>
+                                                    <div className='border d-flex flex-column border-3 h-100 w-100 rounded-3 w-100 position-relative overflow-auto hidescrollbar'>
+                                                        <Container className='sticky-top bg-white'>
+                                                            <h4 className='p-1'>
+                                                                Workflow name :- {Workflowtoshow.name}
+                                                            </h4>
+                                                        </Container>
+                                                        <Container className='ps-4 pe-0'>
+                                                            <Row className='p-2 w-100'>
+                                                                {stepinput.map((i, index) => (
+                                                                    <Col key={index} sm="12" className={`${activeplay === index && 'border border-2'}`}>
+                                                                        <div className='p-2 d-flex'>
+                                                                            <span>{(isLoading && index == activeplay) && "Sending"} {""}{i.value}</span>
+                                                                            <img
+                                                                                width="40px"
+                                                                                className="ms-auto "
+                                                                                src={i.img}
+                                                                                alt={`Step ${index}`}
+                                                                            />
+                                                                        </div>
+                                                                    </Col>
+                                                                ))}
+                                                            </Row>
+                                                        </Container>
+
+                                                        <Container className='mt-auto p-3 bg-white sticky-bottom d-flex'>
+                                                            <Button className='border-0 me-auto my-auto' onClick={playactiveplay}>{isLoading ? "Wait" : "Run"}</Button>
+                                                            <Container className=''>
+                                                                {isLoading &&
+                                                                    // <img className='p-3' src={loader} height={"60px"} />
+                                                                    <RingLoader loading={isLoading} size={30} />
+                                                                }
+                                                            </Container>
+                                                        </Container>
+                                                    </div>
+                                                </div></div>
                                             : <div>
                                                 {
                                                     <div className='text-black p-2 mb-2'>
