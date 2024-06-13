@@ -30,7 +30,7 @@ const Layout = () => {
     const [isAdding, SetisAdding] = useState(false)
     const [NewWorkflow, SetNewWorkflow] = useState({
         "name": `Name of the Layout`,
-        "products": [{ name: "one", config: { width: "200", height: "100", x: 0, y: 30, shape: "box",img:null }, steps: [{ name: "step-1", Wp: false, CRM: false, Erp: false, SMS: false, Mail: false }] }]
+        "products": [{ name: "one", config: { width: "200", height: "200", x: 0, y: 0, shape: "box", img: null }, steps: [{ name: "step-1", Wp: false, CRM: false, Erp: false, SMS: false, Mail: false }] }]
     })
     const [Workflowtoshow, SetWorkflowtoshow] = useState(preview != null ? Workflows[preview] : isAdding && NewWorkflow)
 
@@ -55,12 +55,12 @@ const Layout = () => {
             }));
         }
     };
-    
+
 
     useEffect(() => {
         SetNewWorkflow({
             "name": `Workflow ${Workflows.length + 1}`,
-            "products": [{ name: "one", config: { width: "200", height: "100", x: 0, y: 30, shape: "box" }, steps: [{ name: "step-1", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] }]
+            "products": [{ name: "one", config: { width: "200", height: "200", x: 0, y: 0, shape: "box" }, steps: [{ name: "step-1", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] }]
         })
     }, [Workflows])
 
@@ -144,22 +144,54 @@ const Layout = () => {
 
     const productConfig = ({ type } = {}) => {
         if (type == "rounded") {
-            return { width: 200, height: 200, x: 0, y: 0, shape: "rounded" ,img :null };
+            return { width: 200, height: 200, x: 0, y: 0, shape: "rounded", img: null };
         }
-        else if (type == "circle") { 
-            return { width: 200, height: 200, x: 0, y: 0, shape: "circle" ,img :null };
+        else if (type == "circle") {
+            return { width: 200, height: 200, x: 0, y: 0, shape: "circle", img: null };
         }
         else {
-            return { width: 200, height: 200, x: 0, y: 0, shape: "box" ,img :null };
+            return { width: 200, height: 200, x: 0, y: 0, shape: "box", img: null };
         }
     };
 
+    // const AddNewProduct = ({ type }) => {
+    //     SetisAdding(true)
+
+    //     const newProduct = { name: "Machine Name", config: productConfig({ type }), steps: [{ name: "step-1", Wp: false, CRM: false, Erp: false, SMS: false, Mail: false }] };
+
+    //     if (preview != null) {
+    //         SetWorkflows(prev => {
+    //             const updatedWorkflows = [...prev];
+    //             updatedWorkflows[preview] = {
+    //                 ...updatedWorkflows[preview],
+    //                 products: [...updatedWorkflows[preview].products, newProduct]
+    //             };
+    //             return updatedWorkflows;
+    //         })
+    //     } else {
+    //         SetNewWorkflow(prev => {
+    //             // If this is the first time adding a product
+    //             const newProducts = prev.products.length === 1 
+    //                 ? [newProduct]
+    //                 : [...prev.products, newProduct];
+
+    //             return {
+    //                 ...prev,
+    //                 products: newProducts,
+    //             };
+    //         });
+
+    //     }
+    // }
+
+
+
     const AddNewProduct = ({ type }) => {
-        SetisAdding(true)
-        
+        SetisAdding(true);
+
         const newProduct = { name: "Machine Name", config: productConfig({ type }), steps: [{ name: "step-1", Wp: false, CRM: false, Erp: false, SMS: false, Mail: false }] };
 
-        if (preview != null) {
+        if (preview !== null) {
             SetWorkflows(prev => {
                 const updatedWorkflows = [...prev];
                 updatedWorkflows[preview] = {
@@ -167,11 +199,22 @@ const Layout = () => {
                     products: [...updatedWorkflows[preview].products, newProduct]
                 };
                 return updatedWorkflows;
-            })
+            });
         } else {
             SetNewWorkflow(prev => {
-                // If this is the first time adding a product
-                const newProducts = prev.products.length === 1 
+                const isFirstAddition = prev.products.length === 1 &&
+                    prev.products[0].name === "Machine Name" &&
+                    prev.products[0].config.width === "200" &&
+                    prev.products[0].config.height === "200" &&
+                    prev.products[0].steps.length === 1 &&
+                    prev.products[0].steps[0].name === "step-1" &&
+                    prev.products[0].steps[0].Wp === true &&
+                    prev.products[0].steps[0].CRM === true &&
+                    prev.products[0].steps[0].Erp === false &&
+                    prev.products[0].steps[0].SMS === true &&
+                    prev.products[0].steps[0].Mail === false;
+
+                const newProducts = isFirstAddition
                     ? [newProduct]
                     : [...prev.products, newProduct];
 
@@ -180,9 +223,9 @@ const Layout = () => {
                     products: newProducts,
                 };
             });
-
         }
-    }
+    };
+
 
 
 
@@ -256,7 +299,7 @@ const Layout = () => {
                     }
                     return product;
                 });
-    
+
                 return {
                     ...prev,
                     products: updatedProducts,
@@ -264,7 +307,9 @@ const Layout = () => {
             });
         }
     };
-    
+
+
+
     const handleProductnamechange = (e) => {
         const newName = e.target.value;
 
@@ -282,8 +327,23 @@ const Layout = () => {
                 };
                 return updatedWorkflows;
             });
+        } else if (ActiveCard !== null) {
+            SetNewWorkflow(prev => {
+                const updatedProducts = prev.products.map((product, index) => {
+                    if (index === ActiveCard) {
+                        return { ...product, name: newName };
+                    }
+                    return product;
+                });
+
+                return {
+                    ...prev,
+                    products: updatedProducts,
+                };
+            });
         }
     };
+
 
     const clearWorkflowSelected = () => {
         setPreview(null)
@@ -304,6 +364,50 @@ const Layout = () => {
         }
     };
 
+    const handleStepNameChange = (e, stepIndex) => {
+        const newName = e.target.value;
+
+        if (preview !== null) {
+            SetWorkflows(prev => {
+                const updatedWorkflows = [...prev];
+                const currentWorkflow = updatedWorkflows[preview];
+                const currentProduct = currentWorkflow.products[ActiveCard || 0];
+                const updatedSteps = [...currentProduct.steps];
+
+                updatedSteps[stepIndex] = {
+                    ...updatedSteps[stepIndex],
+                    name: newName,
+                };
+
+                currentProduct.steps = updatedSteps;
+                currentWorkflow.products[ActiveCard || 0] = currentProduct;
+                updatedWorkflows[preview] = currentWorkflow;
+
+                return updatedWorkflows;
+            });
+        } else {
+            SetNewWorkflow(prev => {
+                const updatedProducts = [...prev.products];
+                const currentProduct = updatedProducts[ActiveCard || 0];
+                const updatedSteps = [...currentProduct.steps];
+
+                updatedSteps[stepIndex] = {
+                    ...updatedSteps[stepIndex],
+                    name: newName,
+                };
+
+                currentProduct.steps = updatedSteps;
+                updatedProducts[ActiveCard || 0] = currentProduct;
+
+                return {
+                    ...prev,
+                    products: updatedProducts,
+                };
+            });
+        }
+    };
+
+
 
 
 
@@ -316,14 +420,27 @@ const Layout = () => {
                             <Container fluid className='p-0 d-flex justify-content-evenly h-100 w-100 align-items-center align-items-start'>
 
                                 <div className='position-relative'>
-
-                                    {
-                                        <div className=' text-white p-2 mb-2 rounded-3 d-flex'>
-                                            {
-                                                isAdding && <input className='me-auto my-auto layout-naneinput' onChange={(e) => { handleWorkflowNameChange(e) }} value={Workflowtoshow?.name} />
-                                            }
-                                        </div>
-                                    }
+                                    <div className='d-flex'>
+                                        {
+                                            <div className=' text-white p-2 mb-2 me-auto rounded-3 d-flex'>
+                                                {
+                                                    isAdding && <input className='me-auto my-auto layout-naneinput' onChange={(e) => { handleWorkflowNameChange(e) }} value={Workflowtoshow?.name} />
+                                                }
+                                            </div>
+                                        }
+                                        {
+                                            preview != null && (
+                                                <span
+                                                    className='ms-auto bg-success my-auto rounded-2 p-2 cursor-pointer'
+                                                    onClick={() => {
+                                                        clearWorkflowSelected();
+                                                    }}
+                                                >
+                                                    Add New Workflow
+                                                </span>
+                                            )
+                                        }
+                                    </div>
                                     <div style={{ height: "500px", width: "600px" }} className='rounded-3  d-inline-block position-relative'>
                                         <div className='position-absolute top-50 d-flex flex-column p-1 translate-middle' style={{ left: "-20px" }}>
 
@@ -365,25 +482,36 @@ const Layout = () => {
                                         </div>
                                     </div>
                                 </div>
-                                {ActiveCard != null && console.log(Workflowtoshow?.products[ActiveCard]?.config?.img )}
+                                {ActiveCard != null && console.log(Workflowtoshow?.products[ActiveCard]?.config?.img)}
                                 {(ActiveCard != null && Workflowtoshow?.products[ActiveCard]?.config?.img != null) && <div>
                                     {
                                         <div className='text-black p-2 mb-2'>
-                                            <span className='border-bottom border-2 p-1'>{"Product setup"}</span>
+                                            <span className='border-bottom border-2 p-1'>
+                                                {/* {"Product setup"} */}
+                                                {"Define WorkFlow"}
+                                            </span>
                                         </div>
                                     }
-                                    <div style={{ height: "500px", width: "400px" }} className='rounded-3  d-inline-block'>
+                                    <div style={{ height: "500px", width: "400px" }} className='rounded-3 mt-auto d-inline-block'>
                                         <div className='border  border-3 h-100 w-100 rounded-3 w-100 position-relative overflow-auto hidescrollbar'>
-                                            <Form className='p-2'>
-                                                <div className='py-2 sticky-top text-black bg-white'>{(isAdding || preview != null) ? Workflowtoshow?.products[ActiveCard || 0]?.name : ""} Workflow</div>
-                                                {/* <input placeholder='Workflow Name'
-                                                    value={(isAdding || preview != null) ? Workflowtoshow?.products[ActiveCard || 0]?.name : ""}
-                                                    onChange={handleProductnamechange} className='w-100 mb-3' /> */}
+                                            <Form className='p-2 w-100 h-100'>
+                                                <div className='py-2 sticky-top text-black bg-white'>
+
+                                                    <input placeholder='Workflow Name'
+                                                        value={(isAdding || preview != null) ? Workflowtoshow?.products[ActiveCard || 0]?.name : ""}
+                                                        onChange={handleProductnamechange} className='w-100 mb-3 border-0 ' />
+                                                    {/* Workflow */}
+                                                </div>
                                                 <div className='w-100 ' style={{ minHeight: "100px" }}>
                                                     {
                                                         (isAdding || preview != null) && Workflowtoshow?.products[ActiveCard || 0]?.steps.map((i, v) => (
                                                             <div key={v} className='w-100 bg-white text p-2 my-1'>
-                                                                <input readOnly className='w-100' value={i?.name && i?.name} />
+                                                                {/* <input readOnly className='w-100' value={i?.name && i?.name} /> */}
+                                                                <input
+                                                                    className='w-100'
+                                                                    value={i?.name}
+                                                                    onChange={(e) => handleStepNameChange(e, v)}
+                                                                />
                                                                 <Row className=' p-2'>
                                                                     {
                                                                         stepinput.map((o, index) => (
@@ -410,9 +538,17 @@ const Layout = () => {
                                                     </div>
                                                 </div>
                                                 <div className='d-flex sticky-bottom bg-white'>
-                                                    <Button size='sm' className='ms-auto m-2 border-0' onClick={AddWorkflowstodb} variant='success'>
-                                                        save
-                                                    </Button>
+                                                {preview !== null && <Button size='sm' className='ms-auto m-2 border-0' onClick={Updateproduct} variant='success'>
+                                                Update
+                                                    </Button> }
+                                                {
+                                                    (isAdding && preview == null) &&<Button size='sm' className='ms-auto m-2 border-0' onClick={AddWorkflowstodb} variant='success'>
+                                                    Save
+                                                </Button> 
+                                                }
+                                                    {/* <Button size='sm' className='ms-auto m-2 border-0' onClick={AddWorkflowstodb} variant='success'>
+                                                        Save
+                                                    </Button> */}
                                                 </div>
                                             </Form>
                                         </div>
@@ -427,21 +563,10 @@ const Layout = () => {
             <Row>
                 <Col>
                     <Container className='position-relative'>
-                        <Container fluid className='p-0 d-flex justify-align-content-around h-100 w-100 align-items-center border-3 rounded-1 border border-rpl'>
-                            <div className='rounded-3  p-2 w-100 position-relative'>
-                                <p className='border-bottom border-rpl border-2 w-100 p-2 sticky-top z-3 text-black'>layouts</p>
-                                {
-                                    preview != null && (
-                                        <Button
-                                            className='position-absolute top-0 end-0 m-1 z-3'
-                                            onClick={() => {
-                                                clearWorkflowSelected();
-                                            }}
-                                        >
-                                            Clear selected Workflow
-                                        </Button>
-                                    )
-                                }
+                        <Container fluid className='p-0 d-flex justify-align-content-around h-100 w-100 align-items-center border-3 rounded-1  border-rpl'>
+                            <div className='rounded-3  p-2 w-100 position-relative '>
+                                <p className='border-rpl border-2 w-100 p-2 sticky-top z-3 text-black'>Layouts</p>
+
                                 <Row className=' h-100 w-100 p-2'>
                                     {
                                         Workflows.map((i, index) => (
@@ -468,7 +593,7 @@ const Layout = () => {
 
 
 
-const Component = ({ position,deleteProduct, id, text, editFunction, ActiveCard, setActiveCard, config, handleProductnamechange }) => {
+const Component = ({ position, deleteProduct, id, text, editFunction, ActiveCard, setActiveCard, config, handleProductnamechange }) => {
 
     const [state, setState] = useState({
         width: config?.width || 100,
@@ -544,17 +669,19 @@ const Component = ({ position,deleteProduct, id, text, editFunction, ActiveCard,
         >
             <div className={`w-100 position-relative Layoutcard d-flex flex-column
                  ${config?.shape == "rounded" && "rounded-2"} {""}
-                 ${config?.shape == "circle" && "rounded-circle"} `}                
-                 >
-                <Upload className='position-absolute cursor-pointer top-0 end-0  rounded-circle p-1 text-white m-1 layout-cardimg' style={{ backgroundColor: "#9333EA" }} onClick={() => triggerImageInput()} />
+                 ${config?.shape == "circle" && "rounded-circle"} `}
+            >
+               <div className='position-absolute translate-middle top-50 d-flex flex-column rounded-end py-1 z-3' style={{backgroundColor:"#BACFE3",left:"103%"}}>
+               <Upload className=' cursor-pointer top-0 end-0  rounded-circle p-1 text-white m-1 layout-cardimg' style={{ backgroundColor: "#9333EA" }} onClick={() => triggerImageInput()} />
                 <Trash onClick={(e) => {
                     e.stopPropagation()
                     deleteProduct(id)
                     // deleteDataById({ storeName: "Workflows", id: i.id })
                     // SetFetch(i => !i)
-                }} className='position-absolute cursor-pointer top-0 bg-danger text-white rounded-2 p-1 m-1 z-3 layout-cardimg' style={{ right: "30px" }} />
+                }} className=' cursor-pointer top-0 bg-danger text-white rounded-2 p-1 m-1 z-3 layout-cardimg' style={{ right: "30px" }} />
+               </div>
                 <div className={`p-1 w-100 h-100 d-flex ${config?.shape == "rounded" && "rounded-2"} {""}
-                 ${config?.shape == "circle" && "rounded-circle"} `} 
+                 ${config?.shape == "circle" && "rounded-circle"} `}
                     style={{
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
