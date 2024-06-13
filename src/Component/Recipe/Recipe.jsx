@@ -20,12 +20,18 @@ const Recipe = () => {
   const [preview, setPreview] = useState(null);
   const [NewRecipe, SetNewRecipe] = useState({
     name: `Recipes ${Recipes.length + 1}`,
-    products: [{ name: "one", config: { width: 400, height: 70, x: 0, y: 0 } }]
+    products: [{ name: "one", config: { width: 400, height: 70, x: 0, y: 0,text:"alert" } }]
   });
 
   const [Recipestoshow, SetRecipestoshow] = useState(preview != null ? Recipes[preview] : isAdding && NewRecipe)
   useEffect(() => {
     SetRecipestoshow(preview != null ? Recipes[preview] : NewRecipe && NewRecipe)
+  }, [Recipes, preview, NewRecipe])
+
+  useEffect(() => {
+    SetRecipestoshow(preview != null ? Recipes[preview] : NewRecipe && NewRecipe)
+    console.log(Array.isArray(Recipestoshow?.products))
+    console.log(Array.isArray(NewRecipe.products),NewRecipe.products);
   }, [Recipes, preview, NewRecipe])
 
 
@@ -37,22 +43,42 @@ const Recipe = () => {
     try {
       const data = await getAllData({ storeName: "Recipes" });
       SetRecipes(data || []);
-      SetNewRecipe({
-        name: `Recipe ${data?.length + 1 || 1}`,
-        config: { width: "400", height: "70", x: 0, y: 60, text: "" }
-      });
+      // SetNewRecipe({
+      //   name: `Recipe ${data?.length + 1 || 1}`,
+      //   config: { width: "400", height: "70", x: 0, y: 60, text: "" }
+      // });
     } catch (error) {
       console.error('Error fetching recipes:', error);
     }
   };
 
   const AddRecipes = async (alert) => {
+    // const newRecipe = {
+    //   name: `Recipes ${Recipes.length + 1}`,
+    //   products: [{ name: "one", config: { width: 400, height: 70, x: 0, y: 0 } }]
+    // };
     const newRecipe = {
-      name: `Recipe ${Recipes.length + 1}`,
-      config: { width: "400", height: "70", x: 0, y: 60, text: alert }
+      config: { width: 400, height: 70, x: 0, y: 60, text: alert }
     };
+    if (preview != null) {
+      SetRecipes(prev => {
+        const updatedRecipes = [...prev];
+        updatedRecipes[preview] = {
+          ...updatedRecipes[preview],
+          products: [...updatedRecipes[preview].products, newRecipe]
+        };
+        return updatedRecipes;
+      })
+    } else {
+      SetNewRecipe(prev => {
+        return ({
+          ...prev,
+          products: [...prev.products, newRecipe],
+        })
+      });
+    }
 
-    SetNewRecipe(newRecipe);
+    // SetNewRecipe(newRecipe);
     SetisAdding(true);
   };
 
@@ -123,6 +149,41 @@ const Recipe = () => {
     setPreview(null);
     SetisAdding(false);
   };
+  const updateItinerary = () => {
+    updatestore({ storeName: "Recipes", updatedData: Recipes })
+    // console.log(Recipes);
+  }
+  const editFunction = ({ id, updatedState }) => {
+    if (preview !== null) {
+      SetRecipes(prev => {
+        const updatedRecipes = [...prev];
+        const Recipe = updatedRecipes[preview];
+        Recipe.products = Recipe.products.map((product, index) => {
+          if (index === id) {
+            return { ...product, config: updatedState };
+          }
+          return product;
+        });
+        return updatedRecipes;
+      });
+    }
+  };
+  const deleteLastProduct = () => {
+    if (preview !== null) {
+      SetRecipes((prev) => {
+            const updatedWorkflows = [...prev];
+            if (updatedWorkflows[preview].products.length > 0) {
+                updatedWorkflows[preview].products.pop();
+            }
+            return updatedWorkflows;
+        });
+    } else {
+        SetNewRecipe((prev) => ({
+            ...prev,
+            products: prev.products.slice(0, -1),
+        }));
+    }
+};
   
 
   return (
@@ -150,18 +211,22 @@ const Recipe = () => {
                     <div className='border w-100 h-100 border-3 rounded-3 w-100 boundingbox p-2'>
                       <div className='h-100 w-100 position-relative text-white position-static'>
                         {(isAdding && preview === null) && (
-                          <div className=' text-white p-2 m-1 rounded-3 position-absolute bottom-0 end-0 d-flex'>
-                            {/* <span className='me-auto my-auto'>{NewRecipe.name}</span> */}
+                          <div className=' text-white p-2 mb-2 rounded-3 d-flex position-absolute bottom-0 end-0 m-1 z-3'>
                             <span onClick={saveNewRecipeToDB} className='my-auto ms-auto bg-success rounded-1 py-1 px-2 cursor-pointer z-3'>Save</span>
                           </div>
                         )}
-                        {/* {
+                        {preview !== null && (
+                          <Button onClick={updateItinerary} className='position-absolute bottom-0 end-0 m-1 z-3'>update</Button>
+                        )}
+                        
+                        {
                           (isAdding || preview != null) && Recipestoshow?.products.map((i, index) => {
                             return <Component key={index} index={index}
-                              // editFunction={editFunction}
-                              id={index} text={i.text} config={i?.config} />
+                            deleteLastProduct={deleteLastProduct}
+                              editFunction={editFunction}
+                              id={index} text={i.text} config={i?.config} isLast={index == Recipestoshow?.products.length -1} />
                           })
-                        } */}
+                        }
                       </div>
                     </div>
                   </div>
@@ -217,7 +282,7 @@ const Recipe = () => {
                 <Row className=' h-100 w-100 p-2'>
                   {Recipes?.map((i, index) => (
                     <Col key={index} lg="3" md="3" sm="3" xs="3" xxl="3" onClick={() => { setPreview(index) }} className="text-center p-2 cursor-pointer">
-                      <div className={`p-3 -subtle position-relative text-dark ${preview === index && "border border-info border-2"}`}>
+                      <div style={{backgroundColor:"#BA7FF2"}} className={`p-3 text-white rounded-2 position-relative text-dark ${preview === index && "border border-info border-2"}`}>
                         <Trash onClick={(e) => {
                           e.stopPropagation();
                           deleteRecipe(i.id);
@@ -236,7 +301,7 @@ const Recipe = () => {
   );
 }
 
-const Component = ({ index, config, setActiveRecipe, deleteRecipe, isLast, text, ActiveRecipe }) => {
+const Component = ({ index, config, deleteLastProduct, editFunction, isLast }) => {
   const [state, setState] = useState({
     width: config?.width || 400,
     height: config?.height || 70,
@@ -245,9 +310,10 @@ const Component = ({ index, config, setActiveRecipe, deleteRecipe, isLast, text,
     text: config?.text || ""
   });
 
-  const handleFocus = (id) => {
-    setActiveRecipe(id);
-  }
+  useEffect(() => {
+    editFunction({ id: index, updatedState: state });
+  }, [state])
+
 
   return (
     <Rnd
@@ -270,19 +336,20 @@ const Component = ({ index, config, setActiveRecipe, deleteRecipe, isLast, text,
       minWidth={100}
       minHeight={50}
       bounds="parent"
+      style={{background:"#BACFE3"}}
       className='text-dark text-center -subtle d-flex rounded-2'
-      onClick={() => handleFocus(index)}
     >
-      <div className='bg-white h-100 d-flex p-2 rounded-2 text-dark w-100 m-auto position-relative'>
+      <div className=' h-100 d-flex p-2 rounded-2 text-dark w-100 m-auto position-relative'>
         <span className='m-auto p-1 text-dark'>{state.text}</span>
         <p className='text-black w-100 text-start position-absolute start-0 top-0 p-1'>step {index + 1}</p>
         {isLast && (
-          <Trash onClick={() => deleteRecipe(index)} className='position-absolute top-0 end-0 bg-danger rounded-4 p-1 m-1 text-white cursor-pointer' />
+          <Trash onClick={deleteLastProduct} className='position-absolute top-0 end-0 bg-danger rounded-4 p-1 m-1 text-white cursor-pointer' />
         )}
       </div>
     </Rnd>
   );
 };
+
 
 export default Recipe;
 
