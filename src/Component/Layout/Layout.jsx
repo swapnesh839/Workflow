@@ -35,14 +35,14 @@ const Layout = () => {
         "products": [{ name: "one", config: { width: "200", height: "200", x: 0, y: 0, shape: "box", img: null }, steps: [{ name: "step-1", Wp: false, CRM: false, Erp: false, SMS: false, Mail: false }] }]
     })
     const [Workflowtoshow, SetWorkflowtoshow] = useState(preview != null ? Workflows[preview] : isAdding && NewWorkflow)
-    useEffect(()=>{
-        console.log(NewWorkflow.products);
-    },[NewWorkflow])
+
     const playactiveplay = () => {
+        console.log(Workflowtoshow?.products[ActiveCard].steps.length);
         setIsLoading(true);
+        console.log(stepinput.length - 1 );
         const interval = setInterval(() => {
             setActiveplay((prevActiveplay) => {
-                if (prevActiveplay < stepinput.length - 1) {
+                if (prevActiveplay < Workflowtoshow?.products[ActiveCard].steps.length -1) {
                     return prevActiveplay + 1;
                 } else {
                     clearInterval(interval);
@@ -88,7 +88,7 @@ const Layout = () => {
     useEffect(() => {
         SetNewWorkflow({
             "name": `Workflow ${Workflows.length + 1}`,
-            "products": [{ name: "one", config: { width: "200", height: "200", x: 0, y: 0, shape: "box" }, steps: [{ name: "step-1", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] }]
+            "products": [{ name: "one", config: { width: "200", height: "200", x: 0, y: 0, shape: "box", img: null }, steps: [{ name: "step-1", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] }]
         })
     }, [Workflows])
 
@@ -111,12 +111,12 @@ const Layout = () => {
                 SetWorkflows(prev => {
                     if (!prev || prev.length <= preview) return prev; // Prevent errors if workflows are not yet loaded
                     if (!prev[preview]?.products[ActiveCard]) return prev; // Prevent errors if product does not exist
-    
+
                     const updatedWorkflows = [...prev];
                     const currentWorkflow = { ...updatedWorkflows[preview] };
                     const currentProduct = { ...currentWorkflow.products[ActiveCard] };
                     const updatedSteps = [...currentProduct.steps];
-    
+
                     updatedSteps[stepIndex] = {
                         ...updatedSteps[stepIndex],
                         ...Object.keys(updatedSteps[stepIndex]).reduce((acc, key) => {
@@ -127,22 +127,22 @@ const Layout = () => {
                         }, {}),
                         [checkboxValue]: true,
                     };
-    
+
                     currentProduct.steps = updatedSteps;
                     currentWorkflow.products[ActiveCard] = currentProduct;
                     updatedWorkflows[preview] = currentWorkflow;
-    
+
                     console.log("Updated Workflows:", updatedWorkflows);
                     return updatedWorkflows;
                 });
             } else {
                 SetNewWorkflow(prev => {
                     if (!prev || !prev.products || !prev.products[ActiveCard]) return prev; // Prevent errors if new workflow or products are not yet loaded
-    
+
                     const updatedProducts = [...prev.products];
                     const currentProduct = { ...updatedProducts[ActiveCard] };
                     const updatedSteps = [...currentProduct.steps];
-    
+
                     updatedSteps[stepIndex] = {
                         ...updatedSteps[stepIndex],
                         ...Object.keys(updatedSteps[stepIndex]).reduce((acc, key) => {
@@ -153,15 +153,15 @@ const Layout = () => {
                         }, {}),
                         [checkboxValue]: true,
                     };
-    
+
                     currentProduct.steps = updatedSteps;
                     updatedProducts[ActiveCard] = currentProduct;
-    
+
                     const newState = {
                         ...prev,
                         products: updatedProducts,
                     };
-    
+
                     console.log("Updated NewWorkflow:", newState);
                     return newState;
                 });
@@ -170,8 +170,8 @@ const Layout = () => {
             window.alert("Select an ActiveCard");
         }
     };
-    
-    
+
+
 
 
     const getWorkflows = async () => {
@@ -210,21 +210,19 @@ const Layout = () => {
             });
         } else {
             SetNewWorkflow(prev => {
-                const isFirstAddition = prev.products.length === 1 &&
-                    prev.products[0].name === "Machine Name" &&
-                    prev.products[0].config.width === "200" &&
-                    prev.products[0].config.height === "200" &&
-                    prev.products[0].steps.length === 1 &&
-                    prev.products[0].steps[0].name === "step-1" &&
-                    prev.products[0].steps[0].Wp === false &&
-                    prev.products[0].steps[0].CRM === false &&
-                    prev.products[0].steps[0].Erp === false &&
-                    prev.products[0].steps[0].SMS === false &&
-                    prev.products[0].steps[0].Mail === false;
+                // const isFirstAddition = prev.products.length === 1 &&
+                //     prev.products[0].name === "Machine Name" &&
+                //     prev.products[0].config.width === "200" &&
+                //     prev.products[0].config.height === "200" &&
+                //     prev.products[0].steps.length === 1 &&
+                //     prev.products[0].steps[0].name === "step-1" &&
+                //     prev.products[0].steps[0].Wp === false &&
+                //     prev.products[0].steps[0].CRM === false &&
+                //     prev.products[0].steps[0].Erp === false &&
+                //     prev.products[0].steps[0].SMS === false &&
+                //     prev.products[0].steps[0].Mail === false;
 
-                const newProducts = isFirstAddition
-                    ? [newProduct]
-                    : [...prev.products, newProduct];
+                const newProducts = [...prev.products, newProduct];
 
                 return {
                     ...prev,
@@ -460,7 +458,7 @@ const Layout = () => {
                                                 {preview !== null && <span
                                                     onClick={Updateproduct}
                                                     className='position-absolute end-0 bottom-0 z-3 bg-success rounded-1 py-1 px-2 cursor-pointer'
-                                                >{preview !== null ? "Update" : "Save WorkFlow"}
+                                                >{"Update"}
                                                 </span>}
                                                 {
                                                     (isAdding && preview == null) &&
@@ -513,6 +511,7 @@ const Layout = () => {
                                                                             <input
                                                                                 className='w-100 me-auto'
                                                                                 value={i?.name}
+                                                                                required
                                                                                 onChange={(e) => handleStepNameChange(e, v)}
                                                                             />
 
@@ -524,9 +523,12 @@ const Layout = () => {
                                                                                             <input value={o.value}
                                                                                                 onChange={() => handleSetupCheckboxChange(v, o.value)}
                                                                                                 checked={i?.[o.value] === true || false}
-                                                                                                className="mx-auto" type='checkbox' name={o.value} id={o.value} />
+                                                                                                className="mx-auto" type='radio'
+                                                                                                required
+                                                                                                name={`step-${v}`}
+                                                                                                id={`step-${v}-${o.value}`} />
                                                                                             <div className=''>
-                                                                                                <label className='d-inline' htmlFor={o.value}>
+                                                                                                <label className='d-inline' htmlFor={`step-${v}-${o.value}`}>
                                                                                                     <Image src={o.img} width={30} className='p-1' />
                                                                                                 </label>
                                                                                             </div>
@@ -573,25 +575,44 @@ const Layout = () => {
                                                 <div style={{ height: "500px", width: "400px" }} className='rounded-3 mt-auto d-inline-block text-black'>
                                                     <div className='border d-flex flex-column border-3 h-100 w-100 rounded-3 w-100 position-relative overflow-auto hidescrollbar'>
                                                         <Container className='sticky-top bg-white'>
-                                                            <h4 className='p-1'>
+                                                            <h4 className='p-1 mt-1'>
                                                                 Workflow name :- {Workflowtoshow.name}
                                                             </h4>
                                                         </Container>
                                                         <Container className='ps-4 pe-0'>
                                                             <Row className='p-2 w-100'>
-                                                                {stepinput.map((i, index) => (
-                                                                    <Col key={index} sm="12" className={`${activeplay === index && 'border border-2'}`}>
-                                                                        <div className='p-2 d-flex'>
-                                                                            <span>{(isLoading && index == activeplay) && "Sending"} {""}{i.value}</span>
-                                                                            <img
-                                                                                width="40px"
-                                                                                className="ms-auto "
-                                                                                src={i.img}
-                                                                                alt={`Step ${index}`}
-                                                                            />
-                                                                        </div>
-                                                                    </Col>
-                                                                ))}
+                                                                {
+                                                                    Workflowtoshow?.products.map((i,index) => {
+                                                                        if (ActiveCard == index) {
+                                                                            return(
+                                                                                i?.steps?.map((step, index) => {
+                                                                                    console.log(step);
+                                                                                    const img = step?.Wp &&Wp ||step.CRM && CRM || step.Erp && Erp || step.Mail && Mail || SMS
+                                                                                    const Msg = step?.Wp &&"Whatsapp" ||step.CRM && "CRM" || step.Erp && "Erp" || step.Mail && "Mail" || "SMS"
+                                                                                    return (
+                                                                                        <Col key={index} sm="12" className={`${activeplay === index && 'border border-2'}`}>
+                                                                                            <div className='p-2 d-flex'>
+                                                                                                <span>
+                                                                                                    {/* {(isLoading && index == activeplay) && "Sending"} */}
+                                                                                                     {""}{step.name}</span>
+                                                                                                <img
+                                                                                                    width="40px"
+                                                                                                    className="ms-auto "
+                                                                                                    src={img}
+                                                                                                    alt={`Step ${index}`}
+                                                                                                />
+                                                                                            </div>
+                                                                                            {/* {isLoading && <div>
+                                                                                                {Msg} sent
+                                                                                            </div>} */}
+                                                                                        </Col>
+                                                                                    )
+                                                                                })
+                                                                            )
+                                                                        }
+                                                                        
+                                                                    })
+                                                                }
                                                             </Row>
                                                         </Container>
 
@@ -653,7 +674,7 @@ const Layout = () => {
                                                                                                 name={`step-${v}`}
                                                                                                 id={`step-${v}-${o.value}`} />
                                                                                             <div className=''>
-                                                                                                <label className='d-inline' htmlFor={o.value}>
+                                                                                                <label className='d-inline' htmlFor={`step-${v}-${o.value}`}>
                                                                                                     <Image src={o.img} width={30} className='p-1' />
                                                                                                 </label>
                                                                                             </div>
