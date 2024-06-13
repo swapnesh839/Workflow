@@ -127,6 +127,23 @@ const Itinerary = () => {
       });
     }
   };
+  const deleteLastProduct = () => {
+    if (preview !== null) {
+        setItineraries((prev) => {
+            const updatedWorkflows = [...prev];
+            if (updatedWorkflows[preview].products.length > 0) {
+                updatedWorkflows[preview].products.pop();
+            }
+            return updatedWorkflows;
+        });
+    } else {
+        setNewItinerary((prev) => ({
+            ...prev,
+            products: prev.products.slice(0, -1),
+        }));
+    }
+};
+
 
   return (
     <Container className='overflow-auto'>
@@ -137,7 +154,7 @@ const Itinerary = () => {
               <Container fluid className='p-0 d-flex justify-content-evenly  h-100 w-100 align-items-center align-items-start'>
                 <div className='position-relative'>
                   <div className=' text-black p-2 mb-2 rounded-3 position-relative'>
-                    <sapn className=" border-bottom border-2 p-1">{"Itinerary Setup"}</sapn>
+                    <span className=" border-bottom border-2 p-1">{"Itinerary Setup"}</span>
                   </div>
                   {
                     preview != null || !isAdding && <div className='position-absolute translate-middle top-50' style={{ left: "-50px" }}>
@@ -160,39 +177,35 @@ const Itinerary = () => {
                         {
                           (isAdding || preview != null) && Itinerarytoshow?.products.map((i, index) => {
                             return <Component key={index} index={index}
+                            deleteLastProduct={deleteLastProduct}
+                              isLast={index == Itinerarytoshow?.products.length - 1}
                               editFunction={editFunction}
                               id={index} text={i.text} config={i?.config} />
                           })
                         }
-
-                        {/* {(!isAdding && preview === null) && (
-                          <div className='h-100 w-100 d-flex align-items-center justify-content-center text-white'>
-                            <span>No Itinerary Selected</span>
-                          </div>
-                        )} */}
                       </div>
                     </div>
                   </div>
                 </div>
                 {(isAdding
-                    || preview != null
-                  ) && <div>
-                  <div className=' text-black p-2 mb-2 rounded-3'>
-                    <span className=' border-bottom border-2 p-1'>{"Components"}</span>
-                  </div>
-                  <div style={{ height: "500px", width: "400px" }} className='rounded-3 border border-2'>
-                    <Row className='p-3'>
-                      {obj.map((i) => (
-                        <Col key={i.name} xxl="6" xl="6" md="6" xs="6" className='p-1'>
-                          <div className='d-flex text-black -subtle h-100 p-2 flex-column' onClick={() => addproduct({ text: i.name })}>
-                            <Image src={i.img} className='mx-auto cursor-pointer p-3 border' width={80} />
-                            <p className='mx-auto text-center'>{i.name}</p>
-                          </div>
-                        </Col>
-                      ))}
-                    </Row>
-                  </div>
-                </div>}
+                  || preview != null
+                ) && <div>
+                    <div className=' text-black p-2 mb-2 rounded-3'>
+                      <span className=' border-bottom border-2 p-1'>{"Components"}</span>
+                    </div>
+                    <div style={{ height: "500px", width: "400px" }} className='rounded-3 border border-2'>
+                      <Row className='p-3'>
+                        {obj.map((i) => (
+                          <Col key={i.name} xxl="6" xl="6" md="6" xs="6" className='p-1'>
+                            <div className='d-flex text-black -subtle h-100 p-2 flex-column' onClick={() => addproduct({ text: i.name })}>
+                              <Image src={i.img} className='mx-auto cursor-pointer p-3 border' width={80} />
+                              <p className='mx-auto text-center'>{i.name}</p>
+                            </div>
+                          </Col>
+                        ))}
+                      </Row>
+                    </div>
+                  </div>}
               </Container>
             </Container>
           </Container>
@@ -212,7 +225,7 @@ const Itinerary = () => {
                 <Row className=' h-100 w-100 p-2'>
                   {itineraries?.map((i, index) => (
                     <Col key={index} lg="3" md="3" sm="3" xs="3" xxl="3" onClick={() => { setPreview(index) }} className="text-center p-2 cursor-pointer">
-                      <div className={`p-3 -subtle position-relative text-dark ${preview === index && "border border-info border-2"}`}>
+                      <div style={{ backgroundColor: "#BA7FF2" }} className={`p-3 text-white rounded-2 position-relative text-dark ${preview === index && "border border-info border-2"}`}>
                         <Trash onClick={(e) => {
                           e.stopPropagation();
                           deleteItinerary(i.id);
@@ -231,7 +244,7 @@ const Itinerary = () => {
   );
 }
 
-const Component = ({ index, config, deleteItinerary, editFunction, isLast }) => {
+const Component = ({ index,deleteLastProduct, config, editFunction, isLast }) => {
   const [state, setState] = useState({
     width: config?.width || 400,
     height: config?.height || 70,
@@ -266,14 +279,16 @@ const Component = ({ index, config, deleteItinerary, editFunction, isLast }) => 
       minWidth={100}
       minHeight={50}
       bounds="parent"
-      style={{background:"#BACFE3"}}
+      style={{ background: "#BACFE3" }}
       className='text-dark text-center -subtle d-flex rounded-2'
     >
       <div className=' h-100 d-flex p-2 rounded-2 text-dark w-100 m-auto position-relative'>
         <span className='m-auto p-1 text-dark'>{state.text}</span>
         <p className='text-black w-100 text-start position-absolute start-0 top-0 p-1'>step {index + 1}</p>
         {isLast && (
-          <Trash onClick={() => deleteItinerary(index)} className='position-absolute top-0 end-0 bg-danger rounded-4 p-1 m-1 text-white cursor-pointer' />
+          <Trash onClick={() =>
+            deleteLastProduct()
+          } className='position-absolute top-0 end-0 bg-danger rounded-4 p-1 m-1 text-white cursor-pointer' />
         )}
       </div>
     </Rnd>
