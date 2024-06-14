@@ -32,7 +32,7 @@ const Layout = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [NewWorkflow, SetNewWorkflow] = useState({
         "name": `Name of the Layout`,
-        "products": [{ name: "one", config: { width: "200", height: "200", x: 0, y: 0, shape: "box", img: null }, steps: [{ name: "step-1", Wp: false, CRM: false, Erp: false, SMS: false, Mail: false }] }]
+        "products": [{ name: "one", config: { width:100, height:100, x: 0, y: 0, shape: "box", img: null }, steps: [{ name: "step-1", Wp: false, CRM: false, Erp: false, SMS: false, Mail: false }] }]
     })
     const [Workflowtoshow, SetWorkflowtoshow] = useState(preview != null ? Workflows[preview] : isAdding && NewWorkflow)
 
@@ -88,7 +88,7 @@ const Layout = () => {
     useEffect(() => {
         SetNewWorkflow({
             "name": `Workflow ${Workflows.length + 1}`,
-            "products": [{ name: "one", config: { width: "200", height: "200", x: 0, y: 0, shape: "box", img: null }, steps: [{ name: "step-1", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] }]
+            "products": [{ name: "one", config: { width:100, height:100, x: 0, y: 0, shape: "box", img: null }, steps: [{ name: "step-1", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] }]
         })
     }, [Workflows])
 
@@ -184,13 +184,13 @@ const Layout = () => {
 
     const productConfig = ({ type } = {}) => {
         if (type == "rounded") {
-            return { width: 200, height: 200, x: 0, y: 0, shape: "rounded", img: null };
+            return { width: 100, height: 100, x: 0, y: 0, shape: "rounded", img: null };
         }
         else if (type == "circle") {
-            return { width: 200, height: 200, x: 0, y: 0, shape: "circle", img: null };
+            return { width: 100, height: 100, x: 0, y: 0, shape: "circle", img: null };
         }
         else {
-            return { width: 200, height: 200, x: 0, y: 0, shape: "box", img: null };
+            return { width: 100, height: 100, x: 0, y: 0, shape: "box", img: null };
         }
     };
 
@@ -726,7 +726,7 @@ const Layout = () => {
                                     {
                                         Workflows.map((i, index) => (
                                             <Col key={index} lg="3" md="3" sm="3" xs="3" xxl="3" onClick={() => { setPreview(index) }} className="text-center p-2 cursor-pointer">
-                                                <div className={`p-3 -subtle position-relative text-white rounded-2 bg-rpl2 ${preview == index && "border border-info border-2"}`}>
+                                                <div className={`p-3 -subtle position-relative text-white rounded-2 bg-rpl2 ${preview == index && "border border-rpl border-2"}`}>
                                                     <Trash onClick={(e) => {
                                                         e.stopPropagation()
                                                         deleteDataById({ storeName: "Workflows", id: i.id })
@@ -820,11 +820,11 @@ const Component = ({ position, deleteProduct, id, text, editFunction, ActiveCard
             className={`
                 ${config?.shape == "rounded" && "rounded-2"} {"}
                 ${config?.shape == "circle" && "rounded-circle"}
-             text-dark text-center d-flex p-2 ${ActiveCard == id && "border border-2 border-info"}`}
+             text-dark text-center d-flex p-2 ${ActiveCard == id && "border border-2 border-rpl"}`}
         >
             <div className={`w-100 position-relative Layoutcard d-flex flex-column
                  ${config?.shape == "rounded" && "rounded-2"} {""}
-                 ${config?.shape == "circle" && "rounded-circle"} `}
+                  `}
             >
                 <div className='position-absolute translate-middle top-50 d-flex flex-column rounded-end py-1 z-3' style={{ backgroundColor: "#BACFE3", left: "103%" }}>
                     <Upload className=' cursor-pointer top-0 end-0  rounded-circle p-1 text-white m-1 layout-cardimg' style={{ backgroundColor: "#9333EA" }} onClick={() => triggerImageInput()} />
@@ -835,8 +835,7 @@ const Component = ({ position, deleteProduct, id, text, editFunction, ActiveCard
                         // SetFetch(i => !i)
                     }} className=' cursor-pointer top-0 bg-danger text-white rounded-2 p-1 m-1 z-3 layout-cardimg' style={{ right: "30px" }} />
                 </div>
-                <div className={`p-1 w-100 h-100 d-flex ${config?.shape == "rounded" && "rounded-2"} {""}
-                 ${config?.shape == "circle" && "rounded-circle"} `}
+                <div className={`p-1 w-100 h-100 d-flex ${config?.shape == "rounded" && "rounded-2"} {""} `}
                     style={{
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',

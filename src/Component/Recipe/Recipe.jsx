@@ -234,7 +234,7 @@ const Recipe = () => {
               <Container fluid className='p-0 d-flex justify-content-evenly h-100 w-100 align-items-center align-items-start'>
                 <div className=' position-relative'>
                   <div className='text-black p-2 mb-2 rounded-3 d-flex'>
-                    <input value={Recipestoshow.name} onChange={()=>{handleRecipeNameChange}} className='me-auto my-auto border-top-0 border-end-0 border-start-0' />
+                    <input value={Recipestoshow.name} onChange={()=>{handleRecipeNameChange}} className='me-auto my-auto border-top-0 border-end-0 border-start-0 bdr' />
                     {/* <span className=' border-bottom border-2 p-1 me-auto'>
                       {"Recipe Setup"}
 
@@ -324,7 +324,7 @@ const Recipe = () => {
                 <Row className=' h-100 w-100 p-2'>
                   {Recipes?.map((i, index) => (
                     <Col key={index} lg="3" md="3" sm="3" xs="3" xxl="3" onClick={() => { setPreview(index) }} className="text-center p-2 cursor-pointer">
-                      <div style={{ backgroundColor: "#BA7FF2" }} className={`p-3 text-white rounded-2 position-relative text-dark ${preview === index && "border border-info border-2"}`}>
+                      <div style={{ backgroundColor: "#BA7FF2" }} className={`p-3 text-white rounded-2 position-relative text-dark ${preview === index && "border border-rpl border-2"}`}>
                         <Trash onClick={(e) => {
                           e.stopPropagation();
                           deleteRecipe(i.id);

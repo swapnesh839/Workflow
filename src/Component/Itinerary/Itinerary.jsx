@@ -26,16 +26,19 @@ const Itinerary = () => {
     name: `Itinerary ${itineraries.length + 1}`,
     products: [{ name: "one", config: { width: 400, height: 70, x: 0, y: 0 } }]
   });
-  const [Itinerarytoshow, SetItinerarytoshow] = useState(preview != null ? itineraries[preview] : isAdding && newItinerary)
+
+  const [Itinerarytoshow, SetItinerarytoshow] = useState(preview != null ? itineraries[preview] : isAdding && newItinerary);
+
   useEffect(() => {
     setNewItinerary({
       name: `Itinerary ${itineraries.length + 1}`,
       products: [{ name: "one", config: { width: 400, height: 70, x: 0, y: 0 } }]
-    })
-  }, [itineraries])
+    });
+  }, [itineraries]);
+
   useEffect(() => {
-    SetItinerarytoshow(preview != null ? itineraries[preview] : newItinerary && newItinerary)
-  }, [itineraries, preview, newItinerary])
+    SetItinerarytoshow(preview != null ? itineraries[preview] : newItinerary && newItinerary);
+  }, [itineraries, preview, newItinerary]);
 
   useEffect(() => {
     getItineraries();
@@ -50,12 +53,13 @@ const Itinerary = () => {
     }
   };
 
-  // const addItinerary = (name) => {
   const addproduct = ({ text }) => {
     const newProduct = {
       config: { width: 400, height: 70, x: 0, y: 60, text: text }
     };
-    if (preview != null) {
+
+    // Prevent double addition by checking and managing states more carefully
+    if (preview !== null) {
       setItineraries(prev => {
         const updatedItineraries = [...prev];
         updatedItineraries[preview] = {
@@ -63,18 +67,13 @@ const Itinerary = () => {
           products: [...updatedItineraries[preview].products, newProduct]
         };
         return updatedItineraries;
-      })
-    } else {
-      setNewItinerary(prev => {
-        return ({
-          ...prev,
-          products: [...prev.products, newProduct],
-        })
       });
+    } else {
+      setNewItinerary(prev => ({
+        ...prev,
+        products: [...prev.products, newProduct]
+      }));
     }
-
-
-    // setNewItinerary(newIti);
     setIsAdding(true);
   };
 
@@ -98,14 +97,15 @@ const Itinerary = () => {
   };
 
   const updateItinerary = () => {
-    updatestore({ storeName: "Itineraries", updatedData: itineraries })
+    updatestore({ storeName: "Itineraries", updatedData: itineraries });
     console.log(itineraries);
-  }
+  };
 
   const clearItinerarySelected = () => {
     setPreview(null);
     setIsAdding(false);
   };
+
   const editFunction = ({ id, updatedState }) => {
     if (preview !== null) {
       setItineraries(prev => {
@@ -121,6 +121,7 @@ const Itinerary = () => {
       });
     }
   };
+
   const deleteLastProduct = () => {
     if (preview !== null) {
       setItineraries((prev) => {
@@ -133,13 +134,13 @@ const Itinerary = () => {
     } else {
       setNewItinerary((prev) => ({
         ...prev,
-        products: prev.products.slice(0, -1),
+        products: prev.products.slice(0, -1)
       }));
     }
   };
+
   const updateProductName = (e, id) => {
     const newName = e.target.value;
-    console.log(newName);
 
     if (preview !== null) {
       setItineraries(prev => {
@@ -176,26 +177,27 @@ const Itinerary = () => {
 
         return {
           ...prev,
-          products: updatedProducts,
+          products: updatedProducts
         };
       });
     }
   };
+
   const handleitineraryNameChange = (e) => {
     const newName = e.target.value;
     if (preview !== null) {
-        setItineraries(prev => {
-            const updatedWorkflows = [...prev];
-            updatedWorkflows[preview].name = newName;
-            return updatedWorkflows;
-        });
+      setItineraries(prev => {
+        const updatedWorkflows = [...prev];
+        updatedWorkflows[preview].name = newName;
+        return updatedWorkflows;
+      });
     } else {
-        setNewItinerary(prev => ({
-            ...prev,
-            name: newName,
-        }));
+      setNewItinerary(prev => ({
+        ...prev,
+        name: newName
+      }));
     }
-};
+  };
 
   return (
     <Container className='overflow-auto'>
@@ -203,60 +205,54 @@ const Itinerary = () => {
         <Col>
           <Container>
             <Container fluid className='Layout bg-white h-100 p-2'>
-              <Container fluid className='p-0 d-flex justify-content-evenly  h-100 w-100 align-items-center align-items-start'>
+              <Container fluid className='p-0 d-flex justify-content-evenly h-100 w-100 align-items-center align-items-start'>
                 <div className='position-relative'>
-                  <div className=' text-black p-2 mb-2 rounded-3 position-relative d-lg-flex'>
-                    {/* <span className=" border-bottom border-2 p-1 me-auto">{"Itinerary Setup"}</span> */}
+                  <div className='text-black p-2 mb-2 rounded-3 position-relative d-lg-flex'>
                     <input value={Itinerarytoshow.name} onChange={(e) => { handleitineraryNameChange(e) }} className='me-auto my-auto border-top-0 border-end-0 border-start-0' />
                     {preview !== null && (
-                  <Button className='position-absolute top-0 m-1 z-3 end-0' onClick={clearItinerarySelected}>
-                    Add new 
-                  </Button>
-                )}
+                      <Button className='position-absolute top-0 m-1 z-3 end-0' onClick={clearItinerarySelected}>
+                        Add new
+                      </Button>
+                    )}
                   </div>
-                  {
-                    preview != null || !isAdding && <div className='position-absolute translate-middle top-50' style={{ left: "-50px" }}>
-                      <span onClick={() => {
-                        setIsAdding(true)
-                      }} className='bg-success cursor-pointer p-1 rounded-2'>Create New</span>
+                  {(preview !== null || !isAdding) && (
+                    <div className='position-absolute translate-middle top-50' style={{ left: "-50px" }}>
+                      <span onClick={() => { setIsAdding(true) }} className='bg-success cursor-pointer p-1 rounded-2'>Create New</span>
                     </div>
-                  }
-                  <div style={{ height: "500px", width: "600px" }} className='rounded-3  d-inline-block'>
+                  )}
+                  <div style={{ height: "500px", width: "600px" }} className='rounded-3 d-inline-block'>
                     <div className='border w-100 h-100 border-rpl border-3 rounded-3 w-100 boundingbox p-2'>
                       <div className='h-100 w-100 position-relative text-white position-static'>
                         {(isAdding && preview === null) && (
-                          <div className=' text-white p-2 mb-2 rounded-3 d-flex position-absolute bottom-0 end-0 m-1 z-3'>
+                          <div className='text-white p-2 mb-2 rounded-3 d-flex position-absolute bottom-0 end-0 m-1 z-3'>
                             <span onClick={saveNewItineraryToDB} className='my-auto ms-auto bg-success rounded-1 py-1 px-2 cursor-pointer z-3'>Save</span>
                           </div>
                         )}
                         {preview !== null && (
                           <Button onClick={updateItinerary} className='position-absolute bottom-0 end-0 m-1 z-3'>update</Button>
                         )}
-                        {
-                          (isAdding || preview != null) && Itinerarytoshow?.products.map((i, index) => {
-                            return <Component key={index} index={index}
-                              deleteLastProduct={deleteLastProduct}
-                              isLast={index == Itinerarytoshow?.products.length - 1}
-                              editFunction={editFunction}
-                              updateProductName={updateProductName}
-                              id={index} productname={i.name} config={i?.config} />
-                          })
-                        }
+                        {(isAdding || preview !== null) && Itinerarytoshow?.products.map((i, index) => (
+                          <Component key={index} index={index}
+                            deleteLastProduct={deleteLastProduct}
+                            isLast={index === Itinerarytoshow?.products.length - 1}
+                            editFunction={editFunction}
+                            updateProductName={updateProductName}
+                            id={index} productname={i.name} config={i?.config} />
+                        ))}
                       </div>
                     </div>
                   </div>
                 </div>
-                {(isAdding
-                  || preview != null
-                ) && <div>
-                    <div className=' text-black p-2 mb-2 rounded-3'>
-                      <span className=' border-bottom border-2 p-1'>{"Components"}</span>
+                {(isAdding || preview !== null) && (
+                  <div>
+                    <div className='text-black p-2 mb-2 rounded-3'>
+                      <span className='border-bottom border-2 p-1'>{"Components"}</span>
                     </div>
                     <div style={{ height: "500px", width: "400px" }} className='rounded-3 border border-2'>
                       <Row className='p-3'>
                         {obj.map((i) => (
                           <Col key={i.name} xxl="6" xl="6" md="6" xs="6" className='p-1'>
-                            <div className='d-flex text-black -subtle h-100 p-2 flex-column' onClick={() => addproduct({ text: i.name })}>
+                            <div className='d-flex text-black-subtle h-100 p-2 flex-column' onClick={() => addproduct({ text: i.name })}>
                               <Image src={i.img} className='mx-auto cursor-pointer p-3 border' width={80} />
                               <p className='mx-auto text-center'>{i.name}</p>
                             </div>
@@ -264,7 +260,8 @@ const Itinerary = () => {
                         ))}
                       </Row>
                     </div>
-                  </div>}
+                  </div>
+                )}
               </Container>
             </Container>
           </Container>
@@ -274,14 +271,12 @@ const Itinerary = () => {
         <Col>
           <Container className=''>
             <Container fluid className='p-0 d-flex justify-content-evenly h-100 w-100 align-items-center align-items-start'>
-              <div className='rounded-3  p-2 w-100 position-relative  border-rpl'>
-                <p className='b border-rpl border-2 w-100 p-2 sticky-top z-3 text-black'>Itineraries</p>
-                
-                Recipe Setup
-                <Row className=' h-100 w-100 p-2'>
+              <div className='rounded-3 p-2 w-100 position-relative border-rpl'>
+                <p className='border-rpl border-2 w-100 p-2 sticky-top z-3 text-black'>Itineraries</p>
+                <Row className='h-100 w-100 p-2'>
                   {itineraries?.map((i, index) => (
                     <Col key={index} lg="3" md="3" sm="3" xs="3" xxl="3" onClick={() => { setPreview(index) }} className="text-center p-2 cursor-pointer">
-                      <div style={{ backgroundColor: "#BA7FF2" }} className={`p-3 text-white rounded-2 position-relative text-dark ${preview === index && "border border-info border-2"}`}>
+                      <div style={{ backgroundColor: "#BA7FF2" }} className={`p-3 text-white rounded-2 position-relative text-dark ${preview === index && "border border-rpl border-2"}`}>
                         <Trash onClick={(e) => {
                           e.stopPropagation();
                           deleteItinerary(i.id);
@@ -311,8 +306,7 @@ const Component = ({ index, deleteLastProduct, config, editFunction, isLast, upd
 
   useEffect(() => {
     editFunction({ id: index, updatedState: state });
-  }, [state])
-
+  }, [state]);
 
   return (
     <Rnd
@@ -335,7 +329,6 @@ const Component = ({ index, deleteLastProduct, config, editFunction, isLast, upd
       minWidth={100}
       minHeight={50}
       bounds="parent"
-      // style={{ background: "#BACFE3" }}
       className='text-dark text-center bg-white border d-flex rounded-2'
     >
       <div className='h-100 d-flex p-2 rounded-2 text-dark w-100 m-auto position-relative'>
@@ -347,12 +340,11 @@ const Component = ({ index, deleteLastProduct, config, editFunction, isLast, upd
         />
         <span className='m-auto p-1 text-dark'>{state.text}</span>
         {isLast && (
-          <Trash onClick={deleteLastProduct} className='position-absolute top-0 end-0 bg-danger rounded-4 p-1 m-1 text-white cursor-pointer' />
+          <Trash onClick={deleteLastProduct} className='position-absolute z-3 top-0 end-0 bg-danger rounded-4 p-1 m-1 text-white cursor-pointer' />
         )}
       </div>
     </Rnd>
   );
 };
-
 
 export default Itinerary;
