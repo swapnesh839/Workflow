@@ -137,6 +137,50 @@ const Itinerary = () => {
       }));
     }
   };
+  const updateProductName = (e, id) => {
+    const newName = e.target.value;
+    console.log(newName);
+
+    if (preview !== null) {
+      setItineraries(prev => {
+        const updatedRecipes = prev.map((recipe, recipeIndex) => {
+          if (recipeIndex === preview) {
+            return {
+              ...recipe,
+              products: recipe.products.map((product, productIndex) => {
+                if (productIndex === id) {
+                  return {
+                    ...product,
+                    name: newName
+                  };
+                }
+                return product;
+              })
+            };
+          }
+          return recipe;
+        });
+        return updatedRecipes;
+      });
+    } else {
+      setNewItinerary(prev => {
+        const updatedProducts = prev.products.map((product, productIndex) => {
+          if (productIndex === id) {
+            return {
+              ...product,
+              name: newName
+            };
+          }
+          return product;
+        });
+
+        return {
+          ...prev,
+          products: updatedProducts,
+        };
+      });
+    }
+  };
 
 
   return (
@@ -174,7 +218,8 @@ const Itinerary = () => {
                               deleteLastProduct={deleteLastProduct}
                               isLast={index == Itinerarytoshow?.products.length - 1}
                               editFunction={editFunction}
-                              id={index} text={i.text} config={i?.config} />
+                              updateProductName={updateProductName}
+                              id={index} productname={i.name} config={i?.config} />
                           })
                         }
                       </div>
@@ -209,8 +254,8 @@ const Itinerary = () => {
         <Col>
           <Container className=''>
             <Container fluid className='p-0 d-flex justify-content-evenly h-100 w-100 align-items-center align-items-start'>
-              <div className='rounded-3  p-2 w-100 position-relative border border-2 border-rpl'>
-                <p className='border-bottom border-rpl border-2 w-100 p-2 sticky-top z-3 text-black'>Itineraries</p>
+              <div className='rounded-3  p-2 w-100 position-relative  border-rpl'>
+                <p className='b border-rpl border-2 w-100 p-2 sticky-top z-3 text-black'>Itineraries</p>
                 {preview !== null && (
                   <Button className='position-absolute top-0 m-1 z-3 end-0' onClick={clearItinerarySelected}>
                     Clear selected Itinerary
@@ -238,7 +283,7 @@ const Itinerary = () => {
   );
 }
 
-const Component = ({ index, deleteLastProduct, config, editFunction, isLast }) => {
+const Component = ({ index, deleteLastProduct, config, editFunction, isLast, updateProductName, productname }) => {
   const [state, setState] = useState({
     width: config?.width || 400,
     height: config?.height || 70,
@@ -273,12 +318,17 @@ const Component = ({ index, deleteLastProduct, config, editFunction, isLast }) =
       minWidth={100}
       minHeight={50}
       bounds="parent"
-      style={{ background: "#BACFE3" }}
-      className='text-dark text-center -subtle d-flex rounded-2'
+      // style={{ background: "#BACFE3" }}
+      className='text-dark text-center bg-white border d-flex rounded-2'
     >
-      <div className=' h-100 d-flex p-2 rounded-2 text-dark w-100 m-auto position-relative'>
+      <div className='h-100 d-flex p-2 rounded-2 text-dark w-100 m-auto position-relative'>
+        <input
+          placeholder='Alert Name'
+          value={productname}
+          onChange={(e) => { updateProductName(e, index) }}
+          className='w-100 mb-3 border-0 position-absolute rounded-2 bg-transparent z-2 start-0 top-0 p-1'
+        />
         <span className='m-auto p-1 text-dark'>{state.text}</span>
-        <p className='text-black w-100 text-start position-absolute start-0 top-0 p-1'>step {index + 1}</p>
         {isLast && (
           <Trash onClick={deleteLastProduct} className='position-absolute top-0 end-0 bg-danger rounded-4 p-1 m-1 text-white cursor-pointer' />
         )}
