@@ -828,8 +828,8 @@ const Component = ({ position, deleteProduct, id, text, editFunction, ActiveCard
                   `}
             >
                 <div className='position-absolute translate-middle top-50 d-flex flex-column rounded-end py-1 z-3' style={{ backgroundColor: "#BACFE3", left: "103%" }}>
-                    <Upload className=' cursor-pointer top-0 end-0  rounded-circle p-1 text-white m-1 layout-cardimg' style={{ backgroundColor: "#9333EA" }} onClick={() => triggerImageInput()} />
-                    <Trash onClick={(e) => {
+                    <Upload size={18}  className=' cursor-pointer top-0 end-0  rounded-circle p-1 text-white m-1 layout-cardimg' style={{ backgroundColor: "#9333EA" }} onClick={() => triggerImageInput()} />
+                    <Trash size={18}  onClick={(e) => {
                         e.stopPropagation()
                         deleteProduct(id)
                         // deleteDataById({ storeName: "Workflows", id: i.id })
