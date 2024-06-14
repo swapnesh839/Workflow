@@ -565,7 +565,7 @@ const Layout = () => {
                                                     <div className='text-black p-2 mb-2 d-flex '>
                                                         <span className='border-bottom border-2 p-1 me-auto'>
                                                             {/* {"Product setup"} */}
-                                                            {"Define WorkFlow"}
+                                                            {/* {"Define WorkFlow"} */}
                                                         </span>
                                                         {
                                                             isEditing ? <Eye onClick={() => { SetisEditing(false) }} /> : <Edit onClick={() => { SetisEditing(true) }} />
@@ -632,7 +632,7 @@ const Layout = () => {
                                                     <div className='text-black p-2 mb-2'>
                                                         <span className='border-bottom border-2 p-1'>
                                                             {/* {"Product setup"} */}
-                                                            {"Define WorkFlow"}
+                                                            {/* {"Define WorkFlow"} */}
                                                         </span>
                                                     </div>
                                                 }
