@@ -26,6 +26,7 @@ const Recipe = () => {
   const [Recipestoshow, SetRecipestoshow] = useState(preview != null ? Recipes[preview] : isAdding && NewRecipe)
   useEffect(() => {
     SetRecipestoshow(preview != null ? Recipes[preview] : NewRecipe && NewRecipe)
+    console.log(Recipes);
   }, [Recipes, preview, NewRecipe])
   useEffect(() => {
     SetNewRecipe({
@@ -87,6 +88,55 @@ const Recipe = () => {
       console.error('Error adding new recipe:', error);
     }
   };
+
+
+  const updateProductName = (e, id) => {
+    const newName = e.target.value;
+    console.log(newName);
+
+    if (preview !== null) {
+      SetRecipes(prev => {
+        const updatedRecipes = prev.map((recipe, recipeIndex) => {
+          if (recipeIndex === preview) {
+            return {
+              ...recipe,
+              products: recipe.products.map((product, productIndex) => {
+                if (productIndex === id) {
+                  return {
+                    ...product,
+                    name: newName
+                  };
+                }
+                return product;
+              })
+            };
+          }
+          return recipe;
+        });
+        return updatedRecipes;
+      });
+    } else {
+      SetNewRecipe(prev => {
+        const updatedProducts = prev.products.map((product, productIndex) => {
+          if (productIndex === id) {
+            return {
+              ...product,
+              name: newName
+            };
+          }
+          return product;
+        });
+
+        return {
+          ...prev,
+          products: updatedProducts,
+        };
+      });
+    }
+  };
+
+
+
 
   const deleteLastConfig = async () => {
     try {
@@ -215,8 +265,9 @@ const Recipe = () => {
                           (isAdding || preview != null) && Recipestoshow?.products.map((i, index) => {
                             return <Component key={index} index={index}
                               deleteLastProduct={deleteLastProduct}
+                              updateProductName={updateProductName}
                               editFunction={editFunction}
-                              id={index} text={i.text} config={i?.config} isLast={index == Recipestoshow?.products.length - 1} />
+                              id={index} productname={i.name} config={i?.config} isLast={index == Recipestoshow?.products.length - 1} />
                           })
                         }
                       </div>
@@ -264,8 +315,8 @@ const Recipe = () => {
         <Col>
           <Container className=''>
             <Container fluid className='p-0 d-flex justify-content-evenly h-100 w-100 align-items-center align-items-start'>
-              <div className='rounded-3  p-2 w-100 position-relative border border-2 border-rpl'>
-                <p className='border-bottom border-rpl border-2 w-100 p-2 sticky-top z-3 text-black'>Recipes</p>
+              <div className='rounded-3  p-2 w-100 position-relative border-rpl'>
+                <p className='border-rpl border-2 w-100 p-2 sticky-top z-3 text-black'>Recipes</p>
                 {preview !== null && (
                   <Button className='position-absolute top-0 end-0 m-1 z-3' onClick={clearRecipeSelected}>
                     Clear selected Recipe
@@ -293,7 +344,63 @@ const Recipe = () => {
   );
 }
 
-const Component = ({ index, config, deleteLastProduct, editFunction, isLast }) => {
+// const Component = ({ index, config, deleteLastProduct, editFunction, isLast, handleProductnamechange }) => {
+//   const [state, setState] = useState({
+//     width: config?.width || 400,
+//     height: config?.height || 70,
+//     x: config?.x || 0,
+//     y: config?.y || 0,
+//     text: config?.text || "",
+//     name: config?.name || ""
+//   });
+
+//   useEffect(() => {
+//     editFunction({ id: index, updatedState: state });
+//   }, [state])
+
+
+//   return (
+//     <Rnd
+//       size={{ width: state.width, height: state.height }}
+//       position={{ x: state.x, y: state.y }}
+//       onDragStop={(e, d) => {
+//         setState((prev) => ({
+//           ...prev,
+//           x: d.x,
+//           y: d.y
+//         }));
+//       }}
+//       onResizeStop={(e, direction, ref, delta, position) => {
+//         setState((prev) => ({
+//           ...prev,
+//           width: ref.style.width,
+//           height: ref.style.height
+//         }));
+//       }}
+//       minWidth={100}
+//       minHeight={50}
+//       bounds="parent"
+//       // style={{ background: "#BACFE3" }}
+//       className='text-dark text-center border bg-white d-flex rounded-2'
+//     >
+//       <div className=' h-100 d-flex p-2 rounded-2 text-dark w-100 m-auto position-relative'>
+//         <input placeholder='Alert Name'
+//           // value={(isAdding || preview != null) ? Workflowtoshow?.products[ActiveCard || 0]?.name : ""}
+//           value={state.name}
+//           onChange={(e)=>{handleProductnamechange(e,index)}}
+//           className='w-100 mb-3 border-0 position-absolute rounded-2 bg-transparent z-2 start-0 top-0 p-1' />
+//         <span className='m-auto p-1 text-dark'>{state.text}</span>
+//         {/* <p className='text-black w-100 text-start position-absolute start-0 top-0 p-1'>step {index + 1}</p> */}
+//         {isLast && (
+//           <Trash onClick={deleteLastProduct} className='position-absolute top-0 end-0 bg-danger rounded-4 p-1 m-1 text-white cursor-pointer' />
+//         )}
+//       </div>
+//     </Rnd>
+//   );
+// };
+
+
+const Component = ({ index, config, deleteLastProduct, editFunction, isLast, updateProductName,productname }) => {
   const [state, setState] = useState({
     width: config?.width || 400,
     height: config?.height || 70,
@@ -304,8 +411,7 @@ const Component = ({ index, config, deleteLastProduct, editFunction, isLast }) =
 
   useEffect(() => {
     editFunction({ id: index, updatedState: state });
-  }, [state])
-
+  }, [state]);
 
   return (
     <Rnd
@@ -328,12 +434,16 @@ const Component = ({ index, config, deleteLastProduct, editFunction, isLast }) =
       minWidth={100}
       minHeight={50}
       bounds="parent"
-      style={{ background: "#BACFE3" }}
-      className='text-dark text-center -subtle d-flex rounded-2'
+      className='text-dark text-center border bg-white d-flex rounded-2'
     >
-      <div className=' h-100 d-flex p-2 rounded-2 text-dark w-100 m-auto position-relative'>
+      <div className='h-100 d-flex p-2 rounded-2 text-dark w-100 m-auto position-relative'>
+        <input
+          placeholder='Alert Name'
+          value={productname}
+          onChange={(e) => { updateProductName(e, index) }}
+          className='w-100 mb-3 border-0 position-absolute rounded-2 bg-transparent z-2 start-0 top-0 p-1'
+        />
         <span className='m-auto p-1 text-dark'>{state.text}</span>
-        <p className='text-black w-100 text-start position-absolute start-0 top-0 p-1'>step {index + 1}</p>
         {isLast && (
           <Trash onClick={deleteLastProduct} className='position-absolute top-0 end-0 bg-danger rounded-4 p-1 m-1 text-white cursor-pointer' />
         )}
@@ -341,6 +451,8 @@ const Component = ({ index, config, deleteLastProduct, editFunction, isLast }) =
     </Rnd>
   );
 };
+
+
 
 
 export default Recipe;

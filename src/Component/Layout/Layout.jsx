@@ -39,10 +39,10 @@ const Layout = () => {
     const playactiveplay = () => {
         console.log(Workflowtoshow?.products[ActiveCard].steps.length);
         setIsLoading(true);
-        console.log(stepinput.length - 1 );
+        console.log(stepinput.length - 1);
         const interval = setInterval(() => {
             setActiveplay((prevActiveplay) => {
-                if (prevActiveplay < Workflowtoshow?.products[ActiveCard].steps.length -1) {
+                if (prevActiveplay < Workflowtoshow?.products[ActiveCard].steps.length - 1) {
                     return prevActiveplay + 1;
                 } else {
                     clearInterval(interval);
@@ -582,19 +582,19 @@ const Layout = () => {
                                                         <Container className='ps-4 pe-0'>
                                                             <Row className='p-2 w-100'>
                                                                 {
-                                                                    Workflowtoshow?.products.map((i,index) => {
+                                                                    Workflowtoshow?.products.map((i, index) => {
                                                                         if (ActiveCard == index) {
-                                                                            return(
+                                                                            return (
                                                                                 i?.steps?.map((step, index) => {
                                                                                     console.log(step);
-                                                                                    const img = step?.Wp &&Wp ||step.CRM && CRM || step.Erp && Erp || step.Mail && Mail || SMS
-                                                                                    const Msg = step?.Wp &&"Whatsapp" ||step.CRM && "CRM" || step.Erp && "Erp" || step.Mail && "Mail" || "SMS"
+                                                                                    const img = step?.Wp && Wp || step.CRM && CRM || step.Erp && Erp || step.Mail && Mail || SMS
+                                                                                    const Msg = step?.Wp && "Whatsapp" || step.CRM && "CRM" || step.Erp && "Erp" || step.Mail && "Mail" || "SMS"
                                                                                     return (
                                                                                         <Col key={index} sm="12" className={`${activeplay === index && 'border border-2'}`}>
                                                                                             <div className='p-2 d-flex'>
                                                                                                 <span>
                                                                                                     {/* {(isLoading && index == activeplay) && "Sending"} */}
-                                                                                                     {""}{step.name}</span>
+                                                                                                    {""}{step.name}</span>
                                                                                                 <img
                                                                                                     width="40px"
                                                                                                     className="ms-auto "
@@ -610,7 +610,7 @@ const Layout = () => {
                                                                                 })
                                                                             )
                                                                         }
-                                                                        
+
                                                                     })
                                                                 }
                                                             </Row>
