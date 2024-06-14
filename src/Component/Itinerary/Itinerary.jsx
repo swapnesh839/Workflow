@@ -191,8 +191,13 @@ const Itinerary = () => {
             <Container fluid className='Layout bg-white h-100 p-2'>
               <Container fluid className='p-0 d-flex justify-content-evenly  h-100 w-100 align-items-center align-items-start'>
                 <div className='position-relative'>
-                  <div className=' text-black p-2 mb-2 rounded-3 position-relative'>
-                    <span className=" border-bottom border-2 p-1">{"Itinerary Setup"}</span>
+                  <div className=' text-black p-2 mb-2 rounded-3 position-relative d-lg-flex'>
+                    <span className=" border-bottom border-2 p-1 me-auto">{"Itinerary Setup"}</span>
+                    {preview !== null && (
+                  <Button className='position-absolute top-0 m-1 z-3 end-0' onClick={clearItinerarySelected}>
+                    Add new 
+                  </Button>
+                )}
                   </div>
                   {
                     preview != null || !isAdding && <div className='position-absolute translate-middle top-50' style={{ left: "-50px" }}>
@@ -256,11 +261,8 @@ const Itinerary = () => {
             <Container fluid className='p-0 d-flex justify-content-evenly h-100 w-100 align-items-center align-items-start'>
               <div className='rounded-3  p-2 w-100 position-relative  border-rpl'>
                 <p className='b border-rpl border-2 w-100 p-2 sticky-top z-3 text-black'>Itineraries</p>
-                {preview !== null && (
-                  <Button className='position-absolute top-0 m-1 z-3 end-0' onClick={clearItinerarySelected}>
-                    Clear selected Itinerary
-                  </Button>
-                )}
+                
+                Recipe Setup
                 <Row className=' h-100 w-100 p-2'>
                   {itineraries?.map((i, index) => (
                     <Col key={index} lg="3" md="3" sm="3" xs="3" xxl="3" onClick={() => { setPreview(index) }} className="text-center p-2 cursor-pointer">
