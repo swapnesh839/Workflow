@@ -168,24 +168,6 @@ const Recipe = () => {
     SetSelectedoption(selectedOption);
   };
 
-  const handleRecipeNameChange = (e) => {
-    const newName = e.target.value;
-    if (ActiveRecipe !== null) {
-      SetRecipes(prev => {
-        const updatedRecipes = [...prev];
-        updatedRecipes[ActiveRecipe] = {
-          ...updatedRecipes[ActiveRecipe],
-          name: newName
-        };
-        return updatedRecipes;
-      });
-    } else if (isAdding) {
-      SetNewRecipe(prev => ({
-        ...prev,
-        name: newName
-      }));
-    }
-  };
 
   const clearRecipeSelected = () => {
     setPreview(null);
@@ -226,6 +208,21 @@ const Recipe = () => {
       }));
     }
   };
+  const handleRecipeNameChange = (e) => {
+    const newName = e.target.value;
+    if (preview !== null) {
+        SetRecipes(prev => {
+            const updatedWorkflows = [...prev];
+            updatedWorkflows[preview].name = newName;
+            return updatedWorkflows;
+        });
+    } else {
+        SetNewRecipe(prev => ({
+            ...prev,
+            name: newName,
+        }));
+    }
+};
 
 
   return (
@@ -237,10 +234,11 @@ const Recipe = () => {
               <Container fluid className='p-0 d-flex justify-content-evenly h-100 w-100 align-items-center align-items-start'>
                 <div className=' position-relative'>
                   <div className='text-black p-2 mb-2 rounded-3 d-flex'>
-                    <span className=' border-bottom border-2 p-1 me-auto'>
+                    <input value={Recipestoshow.name} onChange={()=>{handleRecipeNameChange}} className='me-auto my-auto' />
+                    {/* <span className=' border-bottom border-2 p-1 me-auto'>
                       {"Recipe Setup"}
 
-                    </span>
+                    </span> */}
                     {preview !== null && (
                       <Button className='position-absolute top-0 end-0 m-1 z-3' onClick={clearRecipeSelected}>
                         Add New

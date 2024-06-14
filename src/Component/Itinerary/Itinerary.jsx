@@ -181,7 +181,21 @@ const Itinerary = () => {
       });
     }
   };
-
+  const handleitineraryNameChange = (e) => {
+    const newName = e.target.value;
+    if (preview !== null) {
+        setItineraries(prev => {
+            const updatedWorkflows = [...prev];
+            updatedWorkflows[preview].name = newName;
+            return updatedWorkflows;
+        });
+    } else {
+        setNewItinerary(prev => ({
+            ...prev,
+            name: newName,
+        }));
+    }
+};
 
   return (
     <Container className='overflow-auto'>
@@ -192,7 +206,8 @@ const Itinerary = () => {
               <Container fluid className='p-0 d-flex justify-content-evenly  h-100 w-100 align-items-center align-items-start'>
                 <div className='position-relative'>
                   <div className=' text-black p-2 mb-2 rounded-3 position-relative d-lg-flex'>
-                    <span className=" border-bottom border-2 p-1 me-auto">{"Itinerary Setup"}</span>
+                    {/* <span className=" border-bottom border-2 p-1 me-auto">{"Itinerary Setup"}</span> */}
+                    <input value={Itinerarytoshow.name} onChange={(e) => { handleitineraryNameChange(e) }} className='me-auto my-auto' />
                     {preview !== null && (
                   <Button className='position-absolute top-0 m-1 z-3 end-0' onClick={clearItinerarySelected}>
                     Add new 
