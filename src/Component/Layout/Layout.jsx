@@ -550,7 +550,7 @@ const Layout = () => {
                                                                     Update
                                                                 </Button>}
                                                                 {
-                                                                    (isAdding && preview == null) && <Button size='sm' className='ms-auto m-2 border-0' onClick={AddWorkflowstodb} variant='success'>
+                                                                    (isAdding && preview == null) && <Button size='sm' className='ms-auto m-2 border-0' variant='success'>
                                                                         Save
                                                                     </Button>
                                                                 }
@@ -696,7 +696,7 @@ const Layout = () => {
                                                                     Update
                                                                 </Button>}
                                                                 {
-                                                                    (isAdding && preview == null) && <Button size='sm' className='ms-auto m-2 border-0' onClick={AddWorkflowstodb} variant='success'>
+                                                                    (isAdding && preview == null) && <Button size='sm' className='ms-auto m-2 border-0' variant='success'>
                                                                         Save
                                                                     </Button>
                                                                 }
