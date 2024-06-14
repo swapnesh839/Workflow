@@ -197,7 +197,7 @@ const Layout = () => {
     const AddNewProduct = ({ type }) => {
         SetisAdding(true);
 
-        const newProduct = { name: "Machine Name", config: productConfig({ type }), steps: [{ name: "step-1", Wp: false, CRM: false, Erp: false, SMS: false, Mail: false }] };
+        const newProduct = { name: "", config: productConfig({ type }), steps: [{ name: "step-1", Wp: false, CRM: false, Erp: false, SMS: false, Mail: false }] };
 
         if (preview !== null) {
             SetWorkflows(prev => {
@@ -211,7 +211,7 @@ const Layout = () => {
         } else {
             SetNewWorkflow(prev => {
                 // const isFirstAddition = prev.products.length === 1 &&
-                //     prev.products[0].name === "Machine Name" &&
+                //     prev.products[0].name === "" &&
                 //     prev.products[0].config.width === "200" &&
                 //     prev.products[0].config.height === "200" &&
                 //     prev.products[0].steps.length === 1 &&
@@ -479,13 +479,13 @@ const Layout = () => {
                                             isEditing ? <div>
                                                 {
                                                     <div className='text-black p-2 mb-2 d-flex'>
-                                                        <span className='border-bottom border-2 p-1 me-auto'>
-                                                            {/* {"Product setup"} */}
-                                                            {"Define WorkFlow"}
-                                                        </span>
+                                                        
+                                                        <div className='ms-auto'>
                                                         {
                                                             isEditing ? <Eye onClick={() => { SetisEditing(false) }} /> : <Edit onClick={() => { SetisEditing(true) }} />
                                                         }
+                                                        </div>
+
                                                     </div>
                                                 }
                                                 <div style={{ height: "500px", width: "400px" }} className='rounded-3 mt-auto d-inline-block'>
@@ -495,7 +495,7 @@ const Layout = () => {
                                                                 <div className='d-flex'>
                                                                     <input placeholder='Workflow Name'
                                                                         value={(isAdding || preview != null) ? Workflowtoshow?.products[ActiveCard || 0]?.name : ""}
-                                                                        onChange={handleProductnamechange} className='w-100 mb-3 border-0 me-auto' />
+                                                                        onChange={handleProductnamechange} className='w-100 mb-3 border-0 me-auto border-bottom border-2' />
                                                                     {
                                                                         ActiveCard != null && <X className="ms-auto  fs-4 cursor-pointer" onClick={() => { setActiveCard(null) }} />
                                                                     }
@@ -643,7 +643,7 @@ const Layout = () => {
                                                                 <div className='d-flex'>
                                                                     <input placeholder='Workflow Name'
                                                                         value={(isAdding || preview != null) ? Workflowtoshow?.products[ActiveCard || 0]?.name : ""}
-                                                                        onChange={handleProductnamechange} className='w-100 mb-3 border-0 me-auto' />
+                                                                        onChange={handleProductnamechange} className='w-100 mb-3 border-0 me-auto border-bottom border-2' />
                                                                     {
                                                                         ActiveCard != null && <X className="ms-auto  fs-4 cursor-pointer" onClick={() => { setActiveCard(null) }} />
                                                                     }
@@ -822,8 +822,9 @@ const Component = ({ position, deleteProduct, id, text, editFunction, ActiveCard
                 ${config?.shape == "circle" && "rounded-circle"}
              text-dark text-center d-flex p-2 ${ActiveCard == id && "border border-2 border-rpl"}`}
         >
-            <div className={`w-100 position-relative Layoutcard d-flex flex-column
+            <div title={text} className={`w-100 position-relative Layoutcard d-flex flex-column
                  ${config?.shape == "rounded" && "rounded-2"} {""}
+                 ${config?.shape == "circle" && "rounded-circle"}
                   `}
             >
                 <div className='position-absolute translate-middle top-50 d-flex flex-column rounded-end py-1 z-3' style={{ backgroundColor: "#BACFE3", left: "103%" }}>
@@ -835,7 +836,7 @@ const Component = ({ position, deleteProduct, id, text, editFunction, ActiveCard
                         // SetFetch(i => !i)
                     }} className=' cursor-pointer top-0 bg-danger text-white rounded-2 p-1 m-1 z-3 layout-cardimg' style={{ right: "30px" }} />
                 </div>
-                <div className={`p-1 w-100 h-100 d-flex ${config?.shape == "rounded" && "rounded-2"} {""} `}
+                <div className={`p-1 w-100 h-100 d-flex ${config?.shape == "rounded" && "rounded-2"} {""} ${config?.shape == "circle" && "rounded-circle"} `}
                     style={{
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
@@ -843,10 +844,10 @@ const Component = ({ position, deleteProduct, id, text, editFunction, ActiveCard
                     }}>
                     {/* {!state.img && <p className='m-auto text-dark-emphasis -subtle rounded-circle'>change the default image</p>} */}
                 </div>
-                <input placeholder='Workflow Name'
+                {/* {<input placeholder='Workflow Name'
                     // value={(isAdding || preview != null) ? Workflowtoshow?.products[ActiveCard || 0]?.name : ""}
                     value={text}
-                    onChange={handleProductnamechange} className='w-100 mb-3 border-0 ' />
+                    onChange={handleProductnamechange} className='w-100 mb-3 border-0 ' />} */}
             </div>
         </Rnd>
     );
