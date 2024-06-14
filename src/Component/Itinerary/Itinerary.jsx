@@ -207,7 +207,7 @@ const Itinerary = () => {
                 <div className='position-relative'>
                   <div className=' text-black p-2 mb-2 rounded-3 position-relative d-lg-flex'>
                     {/* <span className=" border-bottom border-2 p-1 me-auto">{"Itinerary Setup"}</span> */}
-                    <input value={Itinerarytoshow.name} onChange={(e) => { handleitineraryNameChange(e) }} className='me-auto my-auto' />
+                    <input value={Itinerarytoshow.name} onChange={(e) => { handleitineraryNameChange(e) }} className='me-auto my-auto border-top-0 border-end-0 border-start-0' />
                     {preview !== null && (
                   <Button className='position-absolute top-0 m-1 z-3 end-0' onClick={clearItinerarySelected}>
                     Add new 
