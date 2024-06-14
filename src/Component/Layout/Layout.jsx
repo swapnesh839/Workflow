@@ -32,7 +32,7 @@ const Layout = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [NewWorkflow, SetNewWorkflow] = useState({
         "name": `Name of the Layout`,
-        "products": [{ name: "one", config: { width:100, height:100, x: 0, y: 0, shape: "box", img: null }, steps: [{ name: "step-1", Wp: false, CRM: false, Erp: false, SMS: false, Mail: false }] }]
+        "products": [{ name: "one", config: { width: 100, height: 100, x: 0, y: 0, shape: "box", img: null }, steps: [{ name: "step-1", Wp: false, CRM: false, Erp: false, SMS: false, Mail: false }] }]
     })
     const [Workflowtoshow, SetWorkflowtoshow] = useState(preview != null ? Workflows[preview] : isAdding && NewWorkflow)
 
@@ -88,7 +88,7 @@ const Layout = () => {
     useEffect(() => {
         SetNewWorkflow({
             "name": `Workflow ${Workflows.length + 1}`,
-            "products": [{ name: "one", config: { width:100, height:100, x: 0, y: 0, shape: "box", img: null }, steps: [{ name: "step-1", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] }]
+            "products": [{ name: "one", config: { width: 100, height: 100, x: 0, y: 0, shape: "box", img: null }, steps: [{ name: "step-1", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] }]
         })
     }, [Workflows])
 
@@ -479,18 +479,18 @@ const Layout = () => {
                                             isEditing ? <div>
                                                 {
                                                     <div className='text-black p-2 mb-2 d-flex'>
-                                                        
+
                                                         <div className='ms-auto'>
-                                                        {
-                                                            isEditing ? <Eye onClick={() => { SetisEditing(false) }} /> : <Edit onClick={() => { SetisEditing(true) }} />
-                                                        }
+                                                            {
+                                                                isEditing ? <Eye onClick={() => { SetisEditing(false) }} /> : <Edit onClick={() => { SetisEditing(true) }} />
+                                                            }
                                                         </div>
 
                                                     </div>
                                                 }
                                                 <div style={{ height: "500px", width: "400px" }} className='rounded-3 mt-auto d-inline-block'>
-                                                    <div className='border  border-3 h-100 w-100 rounded-3 w-100 position-relative overflow-auto hidescrollbar'>
-                                                        <Form className='p-2 w-100 h-100'>
+                                                    <div className='border  border-3 h-100 w-100 d-flex flex-column rounded-3 w-100 position-relative overflow-auto hidescrollbar'>
+                                                        <Form className='p-2 w-100 h-100 overflow-auto hidescrollbar'>
                                                             <div className='py-2 sticky-top text-black bg-white'>
                                                                 <div className='d-flex'>
                                                                     <input placeholder='Workflow Name'
@@ -544,7 +544,8 @@ const Layout = () => {
                                                                     +
                                                                 </div>
                                                             </div>
-                                                            <div className='d-flex sticky-bottom bg-white'>
+                                                        </Form>
+                                                            <div className='d-flex mt-auto rounded-1 sticky-bottom bg-white'>
                                                                 {preview !== null && <Button size='sm' className='ms-auto m-2 border-0' onClick={Updateproduct} variant='success'>
                                                                     Update
                                                                 </Button>}
@@ -557,7 +558,6 @@ const Layout = () => {
                                                         Save
                                                     </Button> */}
                                                             </div>
-                                                        </Form>
                                                     </div>
                                                 </div>
                                             </div> : <div>
@@ -637,8 +637,8 @@ const Layout = () => {
                                                     </div>
                                                 }
                                                 <div style={{ height: "500px", width: "400px" }} className='rounded-3 mt-auto d-inline-block'>
-                                                    <div className='border  border-3 h-100 w-100 rounded-3 w-100 position-relative overflow-auto hidescrollbar'>
-                                                        <Form className='p-2 w-100 h-100'>
+                                                    <div className='border  border-3 h-100 w-100 d-flex flex-column rounded-3 w-100 position-relative'>
+                                                        <Form className='p-2 w-100 h-100 overflow-auto hidescrollbar'>
                                                             <div className='py-2 sticky-top text-black bg-white'>
                                                                 <div className='d-flex'>
                                                                     <input placeholder='Workflow Name'
@@ -690,7 +690,8 @@ const Layout = () => {
                                                                     +
                                                                 </div>
                                                             </div>
-                                                            <div className='d-flex sticky-bottom bg-white'>
+                                                        </Form>
+                                                            <div className='d-flex mt-auto rounded-1 sticky-bottom bg-white'>
                                                                 {preview !== null && <Button size='sm' className='ms-auto m-2 border-0' onClick={Updateproduct} variant='success'>
                                                                     Update
                                                                 </Button>}
@@ -703,7 +704,6 @@ const Layout = () => {
                                                         Save
                                                     </Button> */}
                                                             </div>
-                                                        </Form>
                                                     </div>
                                                 </div>
                                             </div>
@@ -828,8 +828,8 @@ const Component = ({ position, deleteProduct, id, text, editFunction, ActiveCard
                   `}
             >
                 <div className='position-absolute translate-middle top-50 d-flex flex-column rounded-end py-1 z-3' style={{ backgroundColor: "#BACFE3", left: "103%" }}>
-                    <Upload size={18}  className=' cursor-pointer top-0 end-0  rounded-circle p-1 text-white m-1 layout-cardimg' style={{ backgroundColor: "#9333EA" }} onClick={() => triggerImageInput()} />
-                    <Trash size={18}  onClick={(e) => {
+                    <Upload size={18} className=' cursor-pointer top-0 end-0  rounded-circle p-1 text-white m-1 layout-cardimg' style={{ backgroundColor: "#9333EA" }} onClick={() => triggerImageInput()} />
+                    <Trash size={18} onClick={(e) => {
                         e.stopPropagation()
                         deleteProduct(id)
                         // deleteDataById({ storeName: "Workflows", id: i.id })
