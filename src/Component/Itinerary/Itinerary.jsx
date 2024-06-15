@@ -208,12 +208,12 @@ const Itinerary = () => {
               <Container fluid className='p-0 d-flex justify-content-evenly h-100 w-100 align-items-center align-items-start'>
                 <div className='position-relative'>
                   <div className='text-black p-2 mb-2 rounded-3 position-relative d-lg-flex'>
-                    <input value={Itinerarytoshow.name} onChange={(e) => { handleitineraryNameChange(e) }} className='me-auto my-auto border-top-0 border-end-0 border-start-0' />
-                    {preview !== null && (
+                    <input value={Itinerarytoshow.name} onChange={(e) => { handleitineraryNameChange(e) }} className='me-auto my-auto w-100 border-top-0 border-end-0 border-start-0' />
+                    {/* {preview !== null && (
                       <Button className='position-absolute top-0 m-1 z-3 end-0' onClick={clearItinerarySelected}>
                         Add new
                       </Button>
-                    )}
+                    )} */}
                   </div>
                   {(preview !== null || !isAdding) && (
                     <div className='position-absolute translate-middle top-50' style={{ left: "-50px" }}>

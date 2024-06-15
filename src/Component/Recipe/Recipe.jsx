@@ -234,16 +234,16 @@ const Recipe = () => {
               <Container fluid className='p-0 d-flex justify-content-evenly h-100 w-100 align-items-center align-items-start'>
                 <div className=' position-relative'>
                   <div className='text-black p-2 mb-2 rounded-3 d-flex'>
-                    <input value={Recipestoshow.name} onChange={()=>{handleRecipeNameChange}} className='me-auto my-auto border-top-0 border-end-0 border-start-0 bdr' />
+                    <input value={Recipestoshow.name} onChange={()=>{handleRecipeNameChange}} className='me-auto w-100 my-auto border-top-0 border-end-0 border-start-0 bdr' />
                     {/* <span className=' border-bottom border-2 p-1 me-auto'>
                       {"Recipe Setup"}
 
                     </span> */}
-                    {preview !== null && (
+                    {/* {preview !== null && (
                       <Button className='position-absolute top-0 end-0 m-1 z-3' onClick={clearRecipeSelected}>
                         Add New
                       </Button>
-                    )}
+                    )} */}
                   </div>
                   {
                     preview != null || !isAdding && <div className='position-absolute translate-middle top-50' style={{ left: "-50px" }}>
