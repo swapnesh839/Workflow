@@ -36,6 +36,10 @@ const Layout = () => {
     })
     const [Workflowtoshow, SetWorkflowtoshow] = useState(preview != null ? Workflows[preview] : isAdding && NewWorkflow)
 
+
+    useEffect(()=>{
+        setActiveCard(null)
+    },[preview])
     const playactiveplay = () => {
         console.log(Workflowtoshow?.products[ActiveCard].steps.length);
         setIsLoading(true);
