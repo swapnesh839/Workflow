@@ -414,11 +414,11 @@ const Layout = () => {
                             <Container fluid className='p-0 d-flex justify-content-evenly h-100 w-100 align-items-center align-items-start'>
 
                                 <div className='position-relative'>
-                                    <div className='d-flex'>
+                                    <div className='w-100'>
                                         {
-                                            <div className=' text-white p-2 mb-2 me-auto rounded-3 d-flex'>
+                                            <div className=' text-white p-2 mb-2 me-auto rounded-3 w-100'>
                                                 {
-                                                    isAdding && <input className='me-auto my-auto layout-naneinput' onChange={(e) => { handleWorkflowNameChange(e) }} value={Workflowtoshow?.name} />
+                                                    isAdding && <input className='me-auto w-100 my-auto layout-naneinput' onChange={(e) => { handleWorkflowNameChange(e) }} value={Workflowtoshow?.name} />
                                                 }
                                             </div>
                                         }
