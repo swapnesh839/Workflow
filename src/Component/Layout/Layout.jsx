@@ -36,10 +36,10 @@ const Layout = () => {
         "products": []
     })
     const [Workflowtoshow, SetWorkflowtoshow] = useState(preview != null ? Workflows[preview] : isAdding && NewWorkflow)
-    const [locallystoredsteps,Setlocallystoredsteps]=useState([])
+    const [locallystoredsteps, Setlocallystoredsteps] = useState([])
 
-    const savesteps = ()=>{
-        
+    const savesteps = () => {
+
     }
     const Addsteps = () => {
         const newStep = { name: `step ${Workflowtoshow.products[ActiveCard]?.steps.length + 1}`, Wp: false, CRM: false, Erp: false, SMS: false, Mail: false };
@@ -79,9 +79,7 @@ const Layout = () => {
         setActiveCard(null)
     }, [preview])
     const playactiveplay = () => {
-        console.log(Workflowtoshow?.products[ActiveCard].steps.length);
         setIsLoading(true);
-        console.log(stepinput.length - 1);
         const interval = setInterval(() => {
             setActiveplay((prevActiveplay) => {
                 if (prevActiveplay < Workflowtoshow?.products[ActiveCard].steps.length - 1) {
@@ -93,7 +91,6 @@ const Layout = () => {
                     return prevActiveplay;
                 }
             });
-            console.log(activeplay);
         }, 3000);
     };
 
@@ -133,6 +130,26 @@ const Layout = () => {
             "products": []
         })
     }, [Workflows])
+    useEffect(() => {
+        if (ActiveCard != null) {
+            if (Workflowtoshow?.products[ActiveCard]?.steps[0]?.name
+                ||
+                Workflowtoshow?.products[ActiveCard]?.steps[0]?.Wp
+                ||
+                Workflowtoshow?.products[ActiveCard]?.steps[0]?.CRM
+                ||
+                Workflowtoshow?.products[ActiveCard]?.steps[0]?.Erp
+                ||
+                Workflowtoshow?.products[ActiveCard]?.steps[0]?.SMS
+                ||
+                Workflowtoshow?.products[ActiveCard]?.steps[0]?.Mail
+            ) {
+                SetisEditing(false)
+            } else {
+                SetisEditing(true)
+            }
+        }
+    }, [ActiveCard])
 
 
     useEffect(() => {
@@ -141,8 +158,6 @@ const Layout = () => {
 
 
     const AddWorkflowstodb = async () => {
-        console.log(NewWorkflow);
-
         await addData({ storeName: "Workflows", newData: NewWorkflow })
         SetFetch(i => !i)
         // SetisAdding(false)
@@ -173,8 +188,6 @@ const Layout = () => {
                     currentProduct.steps = updatedSteps;
                     currentWorkflow.products[ActiveCard] = currentProduct;
                     updatedWorkflows[preview] = currentWorkflow;
-
-                    console.log("Updated Workflows:", updatedWorkflows);
                     return updatedWorkflows;
                 });
             } else {
@@ -202,8 +215,6 @@ const Layout = () => {
                         ...prev,
                         products: updatedProducts,
                     };
-
-                    console.log("Updated NewWorkflow:", newState);
                     return newState;
                 });
             }
@@ -264,7 +275,6 @@ const Layout = () => {
 
     const Updateproduct = () => {
         updatestore({ storeName: "Workflows", updatedData: Workflows })
-        console.log(Workflows);
     }
     const editFunction = ({ id, updatedState }) => {
         if (preview !== null) {
@@ -468,8 +478,9 @@ const Layout = () => {
                                 </div>
                                 {(ActiveCard != null && Workflowtoshow?.products[ActiveCard]?.config?.img != null) &&
                                     (
-                                        preview != null ?
-                                            isEditing ? <div>
+
+                                        isEditing ?
+                                            <div>
                                                 {
                                                     <div className='text-black p-2 mb-2 d-flex'>
 
@@ -499,16 +510,12 @@ const Layout = () => {
                                                                 {
                                                                     (isAdding || preview != null) && Workflowtoshow?.products[ActiveCard || 0]?.steps.map((i, v) => (
                                                                         <div key={v} className='w-100 bg-white text p-2 my-1'>
-                                                                            {/* <input readOnly className='w-100' value={i?.name && i?.name} /> */}
-                                                                            {/* <div className='d-flex'> */}
                                                                             <input
                                                                                 className='w-100 me-auto'
                                                                                 value={i?.name}
                                                                                 required
                                                                                 onChange={(e) => handleStepNameChange(e, v)}
                                                                             />
-
-                                                                            {/* </div> */}
                                                                             <Row className=' p-2'>
                                                                                 {
                                                                                     stepinput.map((o, index) => (
@@ -553,25 +560,30 @@ const Layout = () => {
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div> : <div>
+                                            </div>
+                                            :
+                                            <div>
                                                 {
-                                                    <div className='text-black p-2 mb-2 d-flex '>
-                                                        <span className='border-bottom border-2 p-1 me-auto'>
-                                                            {/* {"Product setup"} */}
-                                                            {/* {"Define WorkFlow"} */}
-                                                        </span>
-                                                        {
-                                                            isEditing ? <Eye onClick={() => { SetisEditing(false) }} /> : <Edit onClick={() => { SetisEditing(true) }} />
-                                                        }
+                                                    <div className='text-black p-2 mb-2 d-flex'>
+
+                                                        <div className='ms-auto'>
+                                                            {
+                                                                isEditing ? <Eye onClick={() => { SetisEditing(false) }} /> : <Edit onClick={() => { SetisEditing(true) }} />
+                                                            }
+                                                        </div>
+
                                                     </div>
                                                 }
                                                 <div style={{ height: "500px", width: "400px" }} className='rounded-3 mt-auto d-inline-block text-black'>
                                                     <div className='border d-flex flex-column border-3 h-100 w-100 rounded-3 w-100 position-relative overflow-auto hidescrollbar'>
                                                         <Container className='sticky-top bg-white'>
-                                                            <h4 className='p-1 mt-1'>
+                                                            <h5 className='p-1 mt-1'>
                                                                 Workflow name :- {Workflowtoshow.name}
-                                                            </h4>
+                                                            </h5>
                                                         </Container>
+                                                        {/* {
+                                                            ActiveCard != null && <X className="ms-auto  fs-4 cursor-pointer" onClick={() => { setActiveCard(null) }} />
+                                                        } */}
                                                         <Container className='ps-4 pe-0'>
                                                             <Row className='p-2 w-100'>
                                                                 {
@@ -579,7 +591,6 @@ const Layout = () => {
                                                                         if (ActiveCard == index) {
                                                                             return (
                                                                                 i?.steps?.map((step, index) => {
-                                                                                    console.log(step);
                                                                                     const img = step?.Wp && Wp || step.CRM && CRM || step.Erp && Erp || step.Mail && Mail || SMS
                                                                                     const Msg = step?.Wp && "Whatsapp" || step.CRM && "CRM" || step.Erp && "Erp" || step.Mail && "Mail" || "SMS"
                                                                                     return (
@@ -619,87 +630,9 @@ const Layout = () => {
                                                             </Container>
                                                         </Container>
                                                     </div>
-                                                </div></div>
-                                            : <div>
-                                                {
-                                                    <div className='text-black p-2 mb-2'>
-                                                        <span className='border-bottom border-2 p-1'>
-                                                            {/* {"Product setup"} */}
-                                                            {/* {"Define WorkFlow"} */}
-                                                        </span>
-                                                    </div>
-                                                }
-                                                <div style={{ height: "500px", width: "400px" }} className='rounded-3 mt-auto d-inline-block'>
-                                                    <div className='border  border-3 h-100 w-100 d-flex flex-column rounded-3 w-100 position-relative'>
-                                                        <Form className='p-2 w-100 h-100 overflow-auto hidescrollbar'>
-                                                            <div className='py-2 sticky-top text-black bg-white'>
-                                                                <div className='d-flex'>
-                                                                    <input placeholder='Workflow Name'
-                                                                        value={(isAdding || preview != null) ? Workflowtoshow?.products[ActiveCard || 0]?.name : ""}
-                                                                        onChange={handleProductnamechange} className='w-100 mb-3 border-0 me-auto border-bottom border-2' />
-                                                                    {
-                                                                        ActiveCard != null && <X className="ms-auto  fs-4 cursor-pointer" onClick={() => { setActiveCard(null) }} />
-                                                                    }
-                                                                </div>
-                                                                {/* Workflow */}
-                                                            </div>
-                                                            <div className='w-100 ' style={{ minHeight: "100px" }}>
-                                                                {
-                                                                    (isAdding || preview != null) && Workflowtoshow?.products[ActiveCard || 0]?.steps.map((i, v) => (
-                                                                        <div key={v} className='w-100 bg-white text p-2 my-1'>
-                                                                            {/* <input readOnly className='w-100' value={i?.name && i?.name} /> */}
-                                                                            {/* <div className='d-flex'> */}
-                                                                            <input
-                                                                                className='w-100 me-auto'
-                                                                                value={i?.name}
-                                                                                onChange={(e) => handleStepNameChange(e, v)}
-                                                                            />
-
-                                                                            {/* </div> */}
-                                                                            <Row className=' p-2'>
-                                                                                {
-                                                                                    stepinput.map((o, index) => (
-                                                                                        <Col key={index} className='-subtle d-flex flex-column rounded-2 text-center mx-1 p-2 justify-content-center align-content-center'>
-                                                                                            <input value={o.value}
-                                                                                                onChange={() => handleSetupCheckboxChange(v, o.value)}
-                                                                                                checked={i?.[o.value] === true || false}
-                                                                                                className="mx-auto" type='radio'
-                                                                                                name={`step-${v}`}
-                                                                                                id={`step-${v}-${o.value}`} />
-                                                                                            <div className=''>
-                                                                                                <label className='d-inline' htmlFor={`step-${v}-${o.value}`}>
-                                                                                                    <Image src={o.img} width={30} className='p-1' />
-                                                                                                </label>
-                                                                                            </div>
-                                                                                        </Col>
-                                                                                    ))
-                                                                                }
-
-                                                                            </Row>
-                                                                        </div>
-                                                                    ))
-                                                                }
-                                                                <div onClick={Addsteps} className='rounded-2 fs-3 cursor-pointer text-white py-1 my-2 text-dark text-capitalize text-center' style={{ background: "#9333ea" }}>
-                                                                    +
-                                                                </div>
-                                                            </div>
-                                                        </Form>
-                                                        <div className='d-flex mt-auto rounded-1 sticky-bottom bg-white'>
-                                                            {preview !== null && <Button size='sm' className='ms-auto m-2 border-0' onClick={Updateproduct} variant='success'>
-                                                                Update
-                                                            </Button>}
-                                                            {
-                                                                (isAdding && preview == null) && <Button size='sm' className='ms-auto m-2 border-0' variant='success'>
-                                                                    Save
-                                                                </Button>
-                                                            }
-                                                            {/* <Button size='sm' className='ms-auto m-2 border-0' onClick={AddWorkflowstodb} variant='success'>
-                                                        Save
-                                                    </Button> */}
-                                                        </div>
-                                                    </div>
                                                 </div>
                                             </div>
+
                                     )
                                 }
 
@@ -753,7 +686,6 @@ const Component = ({ position, deleteProduct, id, text, editFunction, ActiveCard
     });
 
     useEffect(() => {
-        // console.log(config?.img);
         editFunction({ id: id, updatedState: state });
     }, [state])
     const handleFocus = (id) => {
