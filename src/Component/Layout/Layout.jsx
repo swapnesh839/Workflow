@@ -37,9 +37,9 @@ const Layout = () => {
     const [Workflowtoshow, SetWorkflowtoshow] = useState(preview != null ? Workflows[preview] : isAdding && NewWorkflow)
 
 
-    useEffect(()=>{
+    useEffect(() => {
         setActiveCard(null)
-    },[preview])
+    }, [preview])
     const playactiveplay = () => {
         console.log(Workflowtoshow?.products[ActiveCard].steps.length);
         setIsLoading(true);
@@ -91,7 +91,7 @@ const Layout = () => {
 
     useEffect(() => {
         SetNewWorkflow({
-            "name": `Workflow ${Workflows.length + 1}`,
+            "name": `Layout ${Workflows.length + 1}`,
             "products": []
         })
     }, [Workflows])
@@ -142,7 +142,6 @@ const Layout = () => {
             } else {
                 SetNewWorkflow(prev => {
                     if (!prev || !prev.products || !prev.products[ActiveCard]) return prev; // Prevent errors if new workflow or products are not yet loaded
-
                     const updatedProducts = [...prev.products];
                     const currentProduct = { ...updatedProducts[ActiveCard] };
                     const updatedSteps = [...currentProduct.steps];
@@ -201,7 +200,7 @@ const Layout = () => {
     const AddNewProduct = ({ type }) => {
         SetisAdding(true);
 
-        const newProduct = { name: "", config: productConfig({ type }), steps: [{ name: "step-1", Wp: false, CRM: false, Erp: false, SMS: false, Mail: false }] };
+        const newProduct = { name: "", config: productConfig({ type }), steps: [] };
 
         if (preview !== null) {
             SetWorkflows(prev => {
@@ -423,7 +422,7 @@ const Layout = () => {
                                                 }
                                             </div>
                                         }
-                                        {
+                                        {/* {
                                             preview != null && (
                                                 <span
                                                     className='ms-auto bg-success my-auto rounded-2 p-2 cursor-pointer'
@@ -434,7 +433,7 @@ const Layout = () => {
                                                     Add New Workflow
                                                 </span>
                                             )
-                                        }
+                                        } */}
                                     </div>
                                     <div style={{ height: "500px", width: "600px" }} className='rounded-3  d-inline-block position-relative'>
                                         <div className='position-absolute top-50 d-flex flex-column p-1 translate-middle' style={{ left: "-20px" }}>
@@ -549,19 +548,19 @@ const Layout = () => {
                                                                 </div>
                                                             </div>
                                                         </Form>
-                                                            <div className='d-flex mt-auto rounded-1 sticky-bottom bg-white'>
-                                                                {preview !== null && <Button size='sm' className='ms-auto m-2 border-0' onClick={Updateproduct} variant='success'>
-                                                                    Update
-                                                                </Button>}
-                                                                {
-                                                                    (isAdding && preview == null) && <Button size='sm' className='ms-auto m-2 border-0' variant='success'>
-                                                                        Save
-                                                                    </Button>
-                                                                }
-                                                                {/* <Button size='sm' className='ms-auto m-2 border-0' onClick={AddWorkflowstodb} variant='success'>
+                                                        <div className='d-flex mt-auto rounded-1 sticky-bottom bg-white'>
+                                                            {preview !== null && <Button size='sm' className='ms-auto m-2 border-0' onClick={Updateproduct} variant='success'>
+                                                                Update
+                                                            </Button>}
+                                                            {
+                                                                (isAdding && preview == null) && <Button size='sm' className='ms-auto m-2 border-0' variant='success'>
+                                                                    Save
+                                                                </Button>
+                                                            }
+                                                            {/* <Button size='sm' className='ms-auto m-2 border-0' onClick={AddWorkflowstodb} variant='success'>
                                                         Save
                                                     </Button> */}
-                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div> : <div>
@@ -695,19 +694,19 @@ const Layout = () => {
                                                                 </div>
                                                             </div>
                                                         </Form>
-                                                            <div className='d-flex mt-auto rounded-1 sticky-bottom bg-white'>
-                                                                {preview !== null && <Button size='sm' className='ms-auto m-2 border-0' onClick={Updateproduct} variant='success'>
-                                                                    Update
-                                                                </Button>}
-                                                                {
-                                                                    (isAdding && preview == null) && <Button size='sm' className='ms-auto m-2 border-0' variant='success'>
-                                                                        Save
-                                                                    </Button>
-                                                                }
-                                                                {/* <Button size='sm' className='ms-auto m-2 border-0' onClick={AddWorkflowstodb} variant='success'>
+                                                        <div className='d-flex mt-auto rounded-1 sticky-bottom bg-white'>
+                                                            {preview !== null && <Button size='sm' className='ms-auto m-2 border-0' onClick={Updateproduct} variant='success'>
+                                                                Update
+                                                            </Button>}
+                                                            {
+                                                                (isAdding && preview == null) && <Button size='sm' className='ms-auto m-2 border-0' variant='success'>
+                                                                    Save
+                                                                </Button>
+                                                            }
+                                                            {/* <Button size='sm' className='ms-auto m-2 border-0' onClick={AddWorkflowstodb} variant='success'>
                                                         Save
                                                     </Button> */}
-                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
