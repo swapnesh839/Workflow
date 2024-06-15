@@ -24,7 +24,7 @@ const Itinerary = () => {
   const [preview, setPreview] = useState(null);
   const [newItinerary, setNewItinerary] = useState({
     name: `Itinerary ${itineraries.length + 1}`,
-    products: [{ name: "one", config: { width: 400, height: 70, x: 0, y: 0 } }]
+    products: []
   });
 
   const [Itinerarytoshow, SetItinerarytoshow] = useState(preview != null ? itineraries[preview] : isAdding && newItinerary);
@@ -32,7 +32,7 @@ const Itinerary = () => {
   useEffect(() => {
     setNewItinerary({
       name: `Itinerary ${itineraries.length + 1}`,
-      products: [{ name: "one", config: { width: 400, height: 70, x: 0, y: 0 } }]
+      products: []
     });
   }, [itineraries]);
 

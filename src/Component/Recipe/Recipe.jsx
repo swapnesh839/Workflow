@@ -20,7 +20,7 @@ const Recipe = () => {
   const [preview, setPreview] = useState(null);
   const [NewRecipe, SetNewRecipe] = useState({
     name: `Recipes ${Recipes.length + 1}`,
-    products: [{ name: "one", config: { width: 400, height: 70, x: 0, y: 0, text: "alert" } }]
+    products: []
   });
 
   const [Recipestoshow, SetRecipestoshow] = useState(preview != null ? Recipes[preview] : isAdding && NewRecipe)
@@ -31,7 +31,7 @@ const Recipe = () => {
   useEffect(() => {
     SetNewRecipe({
       name: `Recipes ${Recipes.length + 1}`,
-      products: [{ name: "one", config: { width: 400, height: 70, x: 0, y: 0, text: "alert" } }]
+      products: []
     })
   }, [Recipes])
 
