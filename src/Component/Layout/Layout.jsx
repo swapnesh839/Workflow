@@ -32,7 +32,7 @@ const Layout = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [NewWorkflow, SetNewWorkflow] = useState({
         "name": `Name of the Layout`,
-        "products": [{ name: "one", config: { width: 100, height: 100, x: 0, y: 0, shape: "box", img: null }, steps: [{ name: "step-1", Wp: false, CRM: false, Erp: false, SMS: false, Mail: false }] }]
+        "products": []
     })
     const [Workflowtoshow, SetWorkflowtoshow] = useState(preview != null ? Workflows[preview] : isAdding && NewWorkflow)
 
@@ -92,7 +92,7 @@ const Layout = () => {
     useEffect(() => {
         SetNewWorkflow({
             "name": `Workflow ${Workflows.length + 1}`,
-            "products": [{ name: "one", config: { width: 100, height: 100, x: 0, y: 0, shape: "box", img: null }, steps: [{ name: "step-1", Wp: true, CRM: true, Erp: false, SMS: true, Mail: false }] }]
+            "products": []
         })
     }, [Workflows])
 
