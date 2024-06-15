@@ -24,6 +24,7 @@ const stepinput = [
 const Layout = () => {
     const [ActiveCard, setActiveCard] = useState(null)
     const [preview, setPreview] = useState(null);
+    const [localpreview, setlocalPreview] = useState(null);
     const [Workflows, SetWorkflows] = useState([])
     const [Fetch, SetFetch] = useState(true)
     const [isAdding, SetisAdding] = useState(false)
@@ -35,7 +36,44 @@ const Layout = () => {
         "products": []
     })
     const [Workflowtoshow, SetWorkflowtoshow] = useState(preview != null ? Workflows[preview] : isAdding && NewWorkflow)
+    const [locallystoredsteps,Setlocallystoredsteps]=useState([])
 
+    const savesteps = ()=>{
+        
+    }
+    const Addsteps = () => {
+        const newStep = { name: `step ${Workflowtoshow.products[ActiveCard]?.steps.length + 1}`, Wp: false, CRM: false, Erp: false, SMS: false, Mail: false };
+
+        if (preview !== null) {
+            SetWorkflows(prev => {
+                if (!prev || prev.length <= preview) return prev; // Prevent errors if workflows are not yet loaded
+
+                const updatedWorkflows = [...prev];
+                const currentWorkflow = updatedWorkflows[preview];
+
+                if (!currentWorkflow?.products) return prev; // Prevent errors if products are not yet loaded
+
+                currentWorkflow.products = currentWorkflow.products.map(product => ({
+                    ...product,
+                    steps: [...product.steps, newStep]
+                }));
+
+                return updatedWorkflows;
+            });
+        } else {
+            SetNewWorkflow(prev => {
+                const updatedProducts = prev.products.map(product => ({
+                    ...product,
+                    steps: [...product.steps, newStep]
+                }));
+
+                return {
+                    ...prev,
+                    products: updatedProducts
+                };
+            });
+        }
+    };
 
     useEffect(() => {
         setActiveCard(null)
@@ -213,59 +251,11 @@ const Layout = () => {
             });
         } else {
             SetNewWorkflow(prev => {
-                // const isFirstAddition = prev.products.length === 1 &&
-                //     prev.products[0].name === "" &&
-                //     prev.products[0].config.width === "200" &&
-                //     prev.products[0].config.height === "200" &&
-                //     prev.products[0].steps.length === 1 &&
-                //     prev.products[0].steps[0].name === "step-1" &&
-                //     prev.products[0].steps[0].Wp === false &&
-                //     prev.products[0].steps[0].CRM === false &&
-                //     prev.products[0].steps[0].Erp === false &&
-                //     prev.products[0].steps[0].SMS === false &&
-                //     prev.products[0].steps[0].Mail === false;
-
                 const newProducts = [...prev.products, newProduct];
 
                 return {
                     ...prev,
                     products: newProducts,
-                };
-            });
-        }
-    };
-
-    const Addsteps = () => {
-        const newStep = { name: `step ${Workflowtoshow.products[ActiveCard || 0]?.steps.length + 1}`, Wp: false, CRM: false, Erp: false, SMS: false, Mail: false };
-
-        if (preview !== null) {
-            SetWorkflows(prev => {
-                if (!prev || prev.length <= preview) return prev; // Prevent errors if workflows are not yet loaded
-
-                const updatedWorkflows = [...prev];
-                const currentWorkflow = updatedWorkflows[preview];
-
-                if (!currentWorkflow?.products) return prev; // Prevent errors if products are not yet loaded
-
-                currentWorkflow.products = currentWorkflow.products.map(product => ({
-                    ...product,
-                    steps: [...product.steps, newStep]
-                }));
-
-                return updatedWorkflows;
-            });
-        } else {
-            console.log("kj", NewWorkflow);
-
-            SetNewWorkflow(prev => {
-                const updatedProducts = prev.products.map(product => ({
-                    ...product,
-                    steps: [...product.steps, newStep]
-                }));
-
-                return {
-                    ...prev,
-                    products: updatedProducts
                 };
             });
         }
