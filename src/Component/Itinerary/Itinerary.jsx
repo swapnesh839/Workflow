@@ -182,6 +182,15 @@ const Itinerary = () => {
       });
     }
   };
+  useEffect(() => {
+    if (preview != null) {
+        setNewItinerary({
+          name: `Itinerary ${itineraries.length + 1}`,
+          products: []
+        })
+        setIsAdding(true)
+    }
+  }, [preview])
 
   const handleitineraryNameChange = (e) => {
     const newName = e.target.value;

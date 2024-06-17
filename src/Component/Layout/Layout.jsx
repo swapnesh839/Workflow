@@ -104,6 +104,10 @@ const Layout = () => {
 
     useEffect(() => {
         if (preview != null) {
+            SetNewWorkflow({
+                "name": `Name of the Layout`,
+                "products": []
+            })
             SetisAdding(true)
         }
     }, [preview])

@@ -223,6 +223,15 @@ const Recipe = () => {
         }));
     }
 };
+useEffect(() => {
+  if (preview != null) {
+      SetNewRecipe({
+        name: `Recipes ${Recipes.length + 1}`,
+        products: []
+      })
+      SetisAdding(true)
+  }
+}, [preview])
 
 
   return (
