@@ -112,21 +112,41 @@ const Layout = () => {
         }
     }, [preview])
 
-    const deleteProduct = (productId) => {
+    // const deleteProduct = (productId) => {
+    //     if (preview !== null) {
+    //         SetWorkflows((prev) => {
+    //             const updatedWorkflows = [...prev];
+    //             updatedWorkflows[preview].products = updatedWorkflows[preview].products.filter((product, index) => index !== productId);
+    //             return updatedWorkflows;
+    //         });
+    //     } else {
+    //         SetNewWorkflow((prev) => ({
+    //             ...prev,
+    //             products: prev.products.filter((product, index) => index !== productId),
+    //         }));
+    //     }
+    // };
+
+    const deleteProduct = (productIndex) => {
+        console.log("Product Index to delete:", productIndex);
+        console.log("Current Workflows:", Workflows);
+     
         if (preview !== null) {
             SetWorkflows((prev) => {
                 const updatedWorkflows = [...prev];
-                updatedWorkflows[preview].products = updatedWorkflows[preview].products.filter((product, index) => index !== productId);
+                updatedWorkflows[preview] = {
+                    ...updatedWorkflows[preview],
+                    products: updatedWorkflows[preview].products.filter((_, index) => index !== productIndex)
+                };
                 return updatedWorkflows;
             });
         } else {
-            SetNewWorkflow((prev) => ({
-                ...prev,
-                products: prev.products.filter((product, index) => index !== productId),
-            }));
+                SetNewWorkflow((prev) => ({
+                    ...prev,
+                    products: prev.products.filter((product, index) => index !== productIndex),
+                }));
         }
     };
-
 
     useEffect(() => {
         SetNewWorkflow({
