@@ -77,6 +77,7 @@ const Layout = () => {
 
     useEffect(() => {
         setActiveCard(null)
+        SetFetch(i=>!i)
     }, [preview])
     const playactiveplay = () => {
         setIsLoading(true);
