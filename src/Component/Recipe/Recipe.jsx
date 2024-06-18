@@ -1,9 +1,3 @@
-const options = [
-  { value: 'chocolate', label: 'Chocolate', Alerts: ["Alert1", "Alert2", "Alert3", "Alert4"] },
-  { value: 'strawberry', label: 'Strawberry', Alerts: ["Alert1", "Alert2", "Alert3", "Alert4"] },
-  { value: 'vanilla', label: 'Vanilla', Alerts: ["Alert1", "Alert2", "Alert3", "Alert4"] },
-];
-
 import React, { useEffect, useState } from 'react';
 import { Col, Container, Row, Button } from 'react-bootstrap';
 import Select from 'react-select';
@@ -22,11 +16,12 @@ const Recipe = () => {
     name: `Recipes ${Recipes.length + 1}`,
     products: []
   });
+  const [Workflows, SetWorkflows] = useState([])
 
   const [Recipestoshow, SetRecipestoshow] = useState(preview != null ? Recipes[preview] : isAdding && NewRecipe)
   useEffect(() => {
     SetRecipestoshow(preview != null ? Recipes[preview] : NewRecipe && NewRecipe)
-    console.log(Recipes);
+    // console.log(Recipes);
   }, [Recipes, preview, NewRecipe])
   useEffect(() => {
     SetNewRecipe({
@@ -34,6 +29,38 @@ const Recipe = () => {
       products: []
     })
   }, [Recipes])
+  const [options,setOptions] = useState([])
+
+  useEffect(() => {    
+    const data = Workflows.flatMap(layout => {
+      return layout.products.map(product => {
+        let alerts = [];
+        
+       ["e","r","t"].forEach((step, index) => {
+          alerts.push(`Alert ${Math.floor(Math.random() * 100) + 1}`);
+        });
+        
+        return {
+          value: product.name,
+          label: product.name,
+          Alerts: alerts
+        };
+      });
+    });
+    setOptions(data);
+  }, [Workflows]);
+
+
+  const getWorkflows = async () => {
+    const data = await getAllData({ storeName: "Workflows" })
+    SetWorkflows(data)
+  }
+
+
+  useEffect(() => {
+    getWorkflows()
+  }, [Fetch])
+
 
   useEffect(() => {
     SetRecipestoshow(preview != null ? Recipes[preview] : NewRecipe && NewRecipe)
@@ -211,27 +238,27 @@ const Recipe = () => {
   const handleRecipeNameChange = (e) => {
     const newName = e.target.value;
     if (preview !== null) {
-        SetRecipes(prev => {
-            const updatedWorkflows = [...prev];
-            updatedWorkflows[preview].name = newName;
-            return updatedWorkflows;
-        });
+      SetRecipes(prev => {
+        const updatedWorkflows = [...prev];
+        updatedWorkflows[preview].name = newName;
+        return updatedWorkflows;
+      });
     } else {
-        SetNewRecipe(prev => ({
-            ...prev,
-            name: newName,
-        }));
+      SetNewRecipe(prev => ({
+        ...prev,
+        name: newName,
+      }));
     }
-};
-useEffect(() => {
-  if (preview != null) {
+  };
+  useEffect(() => {
+    if (preview != null) {
       SetNewRecipe({
         name: `Recipes ${Recipes.length + 1}`,
         products: []
       })
       SetisAdding(true)
-  }
-}, [preview])
+    }
+  }, [preview])
 
 
   return (
@@ -243,7 +270,7 @@ useEffect(() => {
               <Container fluid className='p-0 d-flex justify-content-evenly h-100 w-100 align-items-center align-items-start'>
                 <div className=' position-relative'>
                   <div className='text-black p-2 mb-2 rounded-3 d-flex'>
-                    <input value={Recipestoshow.name} onChange={()=>{handleRecipeNameChange}} className='me-auto w-100 my-auto border-top-0 border-end-0 border-start-0 bdr' />
+                    <input value={Recipestoshow.name} onChange={() => { handleRecipeNameChange }} className='me-auto w-100 my-auto border-top-0 border-end-0 border-start-0 bdr' />
                     {/* <span className=' border-bottom border-2 p-1 me-auto'>
                       {"Recipe Setup"}
 
