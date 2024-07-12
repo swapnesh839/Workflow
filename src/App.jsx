@@ -18,10 +18,12 @@ function App() {
   //   console.log(data);
   // },[data])
   return (
-    <Container className='p-0 vh-100 text-light d-flex' fluid>
-      <Sidebar />
-      <Approuter />
-    </Container>
+    <Layout/>
+    // <Approuter />
+    // <Container className='p-0 vh-100 text-light d-flex' fluid>
+    //   <Sidebar />
+    //   <Approuter />
+    // </Container>
   );
 }
 

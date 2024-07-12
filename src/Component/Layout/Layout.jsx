@@ -4,7 +4,6 @@ import "./Layout.css"
 import { Rnd } from "react-rnd";
 import Box from "../../../src/assets/Box.jpg"
 import { addData, getAllData, deleteDataById, updatestore, clearStore } from '../../../db/dbFunctions';
-import axios from 'axios';
 import Wp from "../../assets/WP.png"
 import CRM from "../../assets/CRM.png"
 import SMS from "../../assets/SMS.png"
@@ -431,7 +430,7 @@ const Layout = () => {
     };
 
     return (
-        <Container className='overflow-auto'>
+        <div className='overflow-auto'>
             <Row>
                 <Col>
                     <Container>
@@ -693,7 +692,7 @@ const Layout = () => {
                         </Container>
                     </Container></Col>
             </Row>
-        </Container>
+        </div>
     )
 }
 
